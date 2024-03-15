@@ -45,16 +45,27 @@ export const Waveform = ({ progress, onSeek, onLayout }) => {
   };
 
   const bars = useMemo(() => {
-    return Array.from({ length: Math.floor(waveformWidth / 2) }, () =>
-      Math.random()
-    );
+    const numberOfBars = Math.max(Math.floor(waveformWidth / 2), 2);
+    const gradualBars = 4;
+
+    return Array.from({ length: numberOfBars }, (_, index) => {
+      if (index < gradualBars) {
+        // Gradually increasing height for the first few bars
+        return 0 + (index / gradualBars) * 0.7;
+      } else if (index >= numberOfBars - gradualBars) {
+        // Gradually decreasing height for the last few bars
+        return 0.7 - (gradualBars / (numberOfBars - index - 1)) * 0.3;
+      } else {
+        // Random height for the middle bars
+        return 0.7 + Math.random() * 0.3;
+      }
+    });
   }, [waveformWidth]);
 
   const handleLayout = (evt) => {
     const { width } = evt.nativeEvent.layout;
     onLayout(width); // Call the callback function with the measured width
     setWaveformWidth(width);
-    console.log("width", width);
   };
 
   return (

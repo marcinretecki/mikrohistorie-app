@@ -1,11 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { View, Button, useWindowDimensions, StyleSheet } from "react-native";
 import { Audio } from "expo-av";
-import { Text } from "@/styles/typography";
-import { theme } from "@/styles/theme";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  useWindowDimensions,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
+
 import { Waveform } from "./Waveform";
 
-export const Player = ({ uri }: { uri: string }) => {
+import { PlayPauseButton } from "@/components/buttons/PlayPauseButton";
+import { SkipButton } from "@/components/buttons/SkipButton";
+import { theme } from "@/styles/theme";
+import { Text } from "@/styles/typography";
+import { Story } from "@/types";
+
+interface PlayerProps {
+  uri: string;
+  story: Story;
+}
+
+export const Player = ({ uri, story }: PlayerProps) => {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,9 +45,11 @@ export const Player = ({ uri }: { uri: string }) => {
           { shouldPlay: false }
         );
 
-        setSound(newSound);
-        setDuration(status.durationMillis);
-        setIsLoading(false);
+        if (status.isLoaded) {
+          setSound(newSound);
+          setDuration(status.durationMillis);
+          setIsLoading(false);
+        }
       } catch (e) {
         setError("Could not load audio");
         setIsLoading(false);
@@ -79,6 +96,18 @@ export const Player = ({ uri }: { uri: string }) => {
     }
   };
 
+  const skipForward = async () => {
+    const newPosition = Math.min(position + 5000, duration ?? 0); // Skip forward 5 seconds, but not beyond the duration
+    await sound?.setPositionAsync(newPosition);
+    setPosition(newPosition);
+  };
+
+  const skipBackward = async () => {
+    const newPosition = Math.max(position - 5000, 0); // Skip backward 5 seconds, but not less than 0
+    await sound?.setPositionAsync(newPosition);
+    setPosition(newPosition);
+  };
+
   const formatTime = (millis: number) => {
     const minutes = Math.floor(millis / 60000);
     const seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -96,20 +125,28 @@ export const Player = ({ uri }: { uri: string }) => {
 
   return (
     <View style={styles.root}>
-      {isLoading ? (
-        <Text>Loading...</Text>
-      ) : error ? (
-        <Text>Error: {error}</Text>
+      {error ? (
+        <View style={styles.centered}>
+          <Text>Error: {error}</Text>
+        </View>
       ) : (
         <View style={styles.centered}>
-          <Button
-            title={isPlaying ? "Pause" : "Play"}
-            onPress={isPlaying ? pauseSound : playSound}
-          />
-          <Text>
-            Time: {formatTime(position)} /{" "}
-            {duration ? formatTime(duration) : "--:--"}
-          </Text>
+          <Text type="Lora32SemiBold">{story.title}</Text>
+          <View style={styles.buttonWrapper}>
+            {isLoading ? (
+              <ActivityIndicator size="small" color={theme.colors.text60} />
+            ) : (
+              <>
+                <SkipButton onPress={skipBackward} direction="backward" />
+                <PlayPauseButton
+                  onPress={isPlaying ? pauseSound : playSound}
+                  isPlaying={isPlaying}
+                />
+                <SkipButton onPress={skipForward} direction="forward" />
+              </>
+            )}
+          </View>
+          <Text type="Lora14Reg">{story.description}</Text>
           <View style={styles.waveWrapper}>
             <Waveform
               progress={currentProgress}
@@ -133,6 +170,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    gap: 16,
+  },
+  buttonWrapper: {
+    flexDirection: "row",
+    gap: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 100,
   },
   waveWrapper: {
     position: "absolute",
@@ -141,5 +186,4 @@ const styles = StyleSheet.create({
     height: 64,
     paddingHorizontal: 16,
   },
-  wave: { flex: 1, backgroundColor: theme.colors.teal },
 });

@@ -1,6 +1,7 @@
+import { mockStoriesJSON } from "@mocks/stories";
+
 import { storiesSchema } from "@/schemas/storySchema";
 import { Stories } from "@/types";
-import { mockStoriesJSON } from "@mocks/stories";
 
 export const storiesRepository = {
   getStories: async () => {

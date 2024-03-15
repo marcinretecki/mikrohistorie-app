@@ -8,6 +8,7 @@ import { StoryListItem } from "./StoryListItem";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
 import { Story } from "@/types";
+import { Trans } from "@lingui/macro";
 
 export interface StoryListProps {
   stories: Story[];
@@ -76,7 +77,7 @@ function MoreButton({ pathname, params }: MoreButtonProps) {
       <Pressable>
         <View style={styles.moreButtonWrapper}>
           <Text type="Lora14Reg" color={theme.colors.text}>
-            Więcej
+            <Trans>More</Trans>
           </Text>
 
           <Image style={styles.forwardImage} source={ForwardPNG} />

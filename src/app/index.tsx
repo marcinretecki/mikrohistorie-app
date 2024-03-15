@@ -1,33 +1,11 @@
-import { Link, Stack } from "expo-router";
-import React, { useState } from "react";
-import {
-  ScrollView,
-  View,
-  Image,
-  useWindowDimensions,
-  StyleSheet,
-  PixelRatio,
-} from "react-native";
-
-import { Text } from "@/styles/typography";
-import { theme } from "@/styles/theme";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { StoryModeButton } from "@/components/buttons/ButtonStoryMode";
-import { Steps } from "@/components/indicators/Steps";
-import { Indicators } from "@/components/indicators/Indicators";
-import { StoryListItem } from "@/components/lists/StoryListItem";
-import MirakelHusetJPG from "@assets/mirakelhuset.jpg";
-import { Header } from "@/components/header/Header";
-
-const MirakelHusetJPGURI = Image.resolveAssetSource(MirakelHusetJPG).uri;
-
 import { mockStories } from "@mocks/stories";
+import React from "react";
+import { ScrollView, View } from "react-native";
+
+import { Header } from "@/components/header/Header";
 import { StoryHorizontalList } from "@/components/lists/StoryHorizontalList";
-import { useStories } from "@/hooks/useFetchStories";
 
 export default function Page() {
-  const storiesContext = useStories();
-
   return (
     <View style={{ flex: 1 }}>
       <ScrollView>

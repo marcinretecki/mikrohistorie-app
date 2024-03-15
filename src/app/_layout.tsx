@@ -3,21 +3,29 @@ import { BigShouldersInlineText_700Bold } from "@expo-google-fonts/big-shoulders
 import { BigShouldersText_700Bold } from "@expo-google-fonts/big-shoulders-text";
 import { Lora_400Regular, Lora_600SemiBold } from "@expo-google-fonts/lora";
 import { RobotoMono_500Medium } from "@expo-google-fonts/roboto-mono";
-import {
-  ThemeProvider,
-  DarkTheme,
-  DefaultTheme,
-  useTheme,
-} from "@react-navigation/native";
+import { i18n } from "@lingui/core";
+import { Trans } from "@lingui/macro";
+import { I18nProvider } from "@lingui/react";
+import { ThemeProvider, DarkTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
-import { Text as ReactText } from "react-native";
+import { Platform, Text as ReactText, UIManager } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import { StoriesProvider } from "@/hooks/useFetchStories";
+import { messages } from "@/locales/en/messages";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
-import { StoriesProvider } from "@/hooks/useFetchStories";
 
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+i18n.loadAndActivate({ locale: "pl", messages });
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -38,26 +46,37 @@ export default function RootLayout() {
   }, [fontsLoaded, fontError]);
 
   // Prevent rendering until the font has loaded or an error was returned
-  if (!fontsLoaded && !fontError) {
-    return <ReactText>Loading</ReactText>;
+  if (fontsLoaded && !fontError) {
+    console.log("fontsLoaded", fontsLoaded);
+
+    return (
+      // centered test text
+
+      <StoriesProvider>
+        <ThemeProvider value={DarkTheme}>
+          <I18nProvider i18n={i18n} defaultComponent={Text}>
+            {/* <Header /> */}
+            <SafeAreaProvider>
+              <Stack
+                screenOptions={{
+                  headerStyle: { backgroundColor: theme.colors.bg },
+                  headerTintColor: theme.colors.text,
+                  contentStyle: { backgroundColor: theme.colors.bg },
+                  headerShown: false,
+                }}
+              />
+            </SafeAreaProvider>
+          </I18nProvider>
+        </ThemeProvider>
+      </StoriesProvider>
+    );
   }
-  console.log("fontsLoaded", fontsLoaded);
 
   return (
-    <StoriesProvider>
-      <ThemeProvider value={DarkTheme}>
-        {/* <Header /> */}
-        <SafeAreaProvider>
-          <Stack
-            screenOptions={{
-              headerStyle: { backgroundColor: theme.colors.bg },
-              headerTintColor: theme.colors.text,
-              contentStyle: { backgroundColor: theme.colors.bg },
-              headerShown: false,
-            }}
-          />
-        </SafeAreaProvider>
-      </ThemeProvider>
-    </StoriesProvider>
+    <I18nProvider i18n={i18n} defaultComponent={Text}>
+      <ReactText>
+        <Trans>Loading</Trans>
+      </ReactText>
+    </I18nProvider>
   );
 }

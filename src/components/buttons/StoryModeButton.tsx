@@ -1,12 +1,6 @@
 import { Link } from "expo-router";
 import React from "react";
-import {
-  View,
-  ViewStyle,
-  TextStyle,
-  StyleSheet,
-  Pressable,
-} from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 
 import { Caret } from "@/components/icons/Caret";
 import { BoxShadow } from "@/components/shadow/BoxShadow";
@@ -20,29 +14,32 @@ export interface StoryModeButtonProps {
   pathname: string;
 }
 
-export function StoryModeButton(props: StoryModeButtonProps) {
-  const style = stylesheet;
-
+export function StoryModeButton({
+  header,
+  text,
+  params,
+  pathname,
+}: StoryModeButtonProps) {
   return (
     <Link
       href={{
-        pathname: props.pathname,
-        params: props.params,
+        pathname,
+        params,
       }}
       asChild
     >
       <Pressable>
-        <BoxShadow shadowBlur={16}>
-          <View style={style.root}>
-            <View style={style.frame}>
-              <View style={style.headerWrapper}>
-                <Text type="BSInlineDisplay48Bold">{props.header}</Text>
+        <BoxShadow shadow="viewShadowTeal">
+          <View style={styles.root}>
+            <View style={styles.frame}>
+              <View style={styles.headerWrapper}>
+                <Text type="BSInlineDisplay48Bold">{header}</Text>
               </View>
-              <View style={style.textWrapper}>
-                <Text type="Lora14Reg">{props.text}</Text>
+              <View style={styles.textWrapper}>
+                <Text type="Lora14Reg">{text}</Text>
               </View>
             </View>
-            <View style={style.caretWrapper}>
+            <View style={styles.caretWrapper}>
               <Caret />
             </View>
           </View>
@@ -52,7 +49,7 @@ export function StoryModeButton(props: StoryModeButtonProps) {
   );
 }
 
-const stylesheet = StyleSheet.create({
+const styles = StyleSheet.create({
   root: {
     flex: 1,
     flexDirection: "row",

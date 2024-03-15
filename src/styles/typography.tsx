@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import { Text as ReactText, StyleSheet } from "react-native";
+
 import { theme } from "./theme";
 
 export interface TypographyProps extends PropsWithChildren {
@@ -15,16 +16,20 @@ export interface TypographyProps extends PropsWithChildren {
     | "Lora32SemiBold"
     | "Lora20SemiBold"
     | "Lora16SemiBold"
+    | "Lora12Reg"
     | "RobotoMono10Medium";
+  style?: object;
 }
 
 export const Text = ({
   type = "Lora14Reg",
   color,
   children,
+  style,
 }: TypographyProps) => {
   const textStyle = {
     ...styles[type],
+    ...(style && style), // Apply style only if provided) ,
     ...(color && { color }), // Apply color only if provided
   };
 
@@ -71,7 +76,8 @@ const styles = StyleSheet.create({
   Lora14Reg: {
     color: theme.colors.text,
     fontFamily: "Lora_400Regular",
-    fontSize: 12,
+    fontSize: 14,
+    lineHeight: 20,
   },
   Lora32SemiBold: {
     color: theme.colors.text,
@@ -97,5 +103,6 @@ const styles = StyleSheet.create({
     color: theme.colors.text60,
     fontFamily: "RobotoMono_500Medium",
     fontSize: 10,
+    lineHeight: 12,
   },
 });

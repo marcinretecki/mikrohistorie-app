@@ -7,6 +7,9 @@ export type Story = {
   description: string;
   imageURI: string;
   versions: StoryVersion[];
+  translations: {
+    pl: string;
+  };
 };
 
 export type StoryVersion = {

@@ -28,6 +28,11 @@ export const theme = {
     },
     viewShadowTeal: {
       color: "rgba(0, 84, 111, 0.40)",
+      blur: 16,
+    },
+    viewShadowTealMedium: {
+      color: "#008BB8",
+      blur: 12,
     },
     viewShadowDark: {
       color: "rgba(0, 0, 0, 0.60)",

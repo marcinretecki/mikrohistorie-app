@@ -1,19 +1,21 @@
-import { Canvas, Rect, Shadow } from "@shopify/react-native-skia";
+import { Blur, Canvas, Rect, Shadow } from "@shopify/react-native-skia";
 import React, { PropsWithChildren, useState } from "react";
 import { PixelRatio, View } from "react-native";
 
 import { theme } from "@/styles/theme";
 
 interface SkiaShadowProps {
-  shadowBlur: number;
+  shadow?: "viewShadowTealMedium" | "viewShadowTeal";
 }
 
 export const BoxShadow = ({
-  shadowBlur,
+  shadow = "viewShadowTeal",
   children,
 }: PropsWithChildren<SkiaShadowProps>) => {
   const [layout, setLayout] = useState(null);
-  const blur = shadowBlur / PixelRatio.get();
+  const blur = theme.shadows[shadow].blur;
+
+  const blur2 = blur * 2;
 
   return (
     <View style={{ position: "relative" }}>
@@ -33,20 +35,20 @@ export const BoxShadow = ({
           <Rect
             x={blur}
             y={blur}
-            width={layout.width - blur * 2}
-            height={layout.height - blur * 2}
-            color={theme.colors.bg}
+            width={layout.width - blur2}
+            height={layout.height - blur2}
+            color={theme.shadows[shadow].color}
           >
-            <Shadow
-              dx={0}
-              dy={0}
-              blur={blur}
-              color={theme.shadows.viewShadowTeal.color}
-              shadowOnly
-            />
+            <Blur blur={theme.shadows[shadow].blur / PixelRatio.get()} />
           </Rect>
         )}
       </Canvas>
     </View>
   );
 };
+function useSharedValue(arg0: number) {
+  throw new Error("Function not implemented.");
+}
+function useDerivedValue(arg0: () => number) {
+  throw new Error("Function not implemented.");
+}

@@ -38,6 +38,9 @@ export const storySchema = z.object({
   description: z.string(),
   imageURI: z.string(),
   versions: z.array(storyVersionSchema),
+  translations: z.object({
+    pl: z.string(),
+  }),
 });
 
 export const storiesSchema = z.array(storySchema);
