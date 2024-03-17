@@ -1,6 +1,7 @@
 export const theme = {
   colors: {
     teal: "#6bdffe",
+    tealPressed: "#64C9EF",
     pink: "#ff80d4",
     bg: "#110e16",
     text: "#dddaf3",

@@ -54,7 +54,7 @@ export default function RootLayout() {
 
       <StoriesProvider>
         <ThemeProvider value={DarkTheme}>
-          <I18nProvider i18n={i18n} defaultComponent={Text}>
+          <I18nProvider i18n={i18n}>
             {/* <Header /> */}
             <SafeAreaProvider>
               <Stack
@@ -73,7 +73,7 @@ export default function RootLayout() {
   }
 
   return (
-    <I18nProvider i18n={i18n} defaultComponent={Text}>
+    <I18nProvider i18n={i18n}>
       <ReactText>
         <Trans>Loading</Trans>
       </ReactText>

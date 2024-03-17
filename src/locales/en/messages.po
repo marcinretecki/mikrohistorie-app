@@ -13,7 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/app/_layout.tsx:51
+#: src/components/audio/PhraseWriter.tsx:94
+msgid "Check"
+msgstr "Check"
+
+#: src/app/_layout.tsx:78
 msgid "Loading"
 msgstr "Loading"
 

@@ -4,18 +4,20 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { BottomPlayer } from "@/components/audio/BottomPlayer";
 import { BackButton } from "@/components/header/BackButton";
 import { Reader } from "@/components/indicators/Reader";
-import { PhraseList } from "@/components/lists/PhraseList";
+import { PhraseWriteList } from "@/components/lists/PhraseWriteList";
 import { useAudio } from "@/hooks/useAudio";
 import { useStory } from "@/hooks/useStory";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
 import { throttle } from "@/utilities/throttle";
+import { ButtonPrimary } from "../buttons/ButtonPrimary";
+import { Trans } from "@lingui/macro";
 
-// TODO: add debounce to handleSetPhraseNumber
-export const PhrasePlayer = () => {
+export const PhraseWriter = () => {
   const { story, version } = useStory();
   const { sound, isLoading, error } = useAudio({ uri: version.audioURI });
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   let playbackPositionCheckInterval: NodeJS.Timeout | null = null;
 
@@ -39,7 +41,6 @@ export const PhrasePlayer = () => {
       setIsPlaying(false);
       await sound.pauseAsync();
     }
-
     await sound.setPositionAsync(timeStart);
     await sound.playAsync();
     setIsPlaying(true);
@@ -76,12 +77,22 @@ export const PhrasePlayer = () => {
             <Reader version={version} />
           </View>
           <View style={styles.contentWrapper}>
-            <PhraseList
+            <PhraseWriteList
               handleSetPhraseNumber={handleSetPhraseNumber}
               version={version}
               currentPhraseNumber={phraseNumber}
               isPlaying={isPlaying}
+              isChecked={isChecked}
             />
+          </View>
+          <View style={styles.contentWrapper}>
+            <ButtonPrimary
+              onPress={() => {
+                console.log("press");
+              }}
+            >
+              <Trans>Check</Trans>
+            </ButtonPrimary>
           </View>
         </View>
       </ScrollView>
