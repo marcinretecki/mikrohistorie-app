@@ -3,9 +3,8 @@ import languageTealIMG from "@assets/language_teal.png";
 import playArrowIMG from "@assets/play_arrow.png";
 import skipNextIMG from "@assets/skip_next.png";
 import skipPreviousIMG from "@assets/skip_previous.png";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Animated,
   Image,
   LayoutAnimation,
   Pressable,
@@ -20,12 +19,14 @@ import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
 
 export interface BottomPlayerProps {
+  size?: "small" | "big";
   position: number;
   maxPosition: number;
   handleSetPhraseNumber: (newPosition: number) => void;
 }
 
 export const BottomPlayer = ({
+  size = "big",
   position,
   maxPosition,
   handleSetPhraseNumber,
@@ -46,7 +47,7 @@ export const BottomPlayer = ({
 
   return (
     <View style={styles.root}>
-      <View style={styles.player}>
+      <View style={[styles.player, size === "small" && styles.playerSmall]}>
         <View style={styles.buttonWrapper}>
           <Text type="RobotoMono10Medium">
             {position.toString() + "/" + maxPosition}
@@ -61,11 +62,15 @@ export const BottomPlayer = ({
         <BottomPlayerButton onPress={() => nextPositionHandler()}>
           <Image style={styles.playImage} source={skipNextIMG} />
         </BottomPlayerButton>
-        <BottomPlayerButton
-          onPress={() => setTranslationIsOpen(!translationIsOpen)}
-        >
-          <LanguageButtonContent language="PL" active={translationIsOpen} />
-        </BottomPlayerButton>
+        {size === "big" ? (
+          <BottomPlayerButton
+            onPress={() => setTranslationIsOpen(!translationIsOpen)}
+          >
+            <LanguageButtonContent language="PL" active={translationIsOpen} />
+          </BottomPlayerButton>
+        ) : (
+          <View style={styles.buttonWrapper} />
+        )}
       </View>
       <BottomPlayerTranslation isOpen={translationIsOpen} />
     </View>
@@ -156,6 +161,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     alignSelf: "stretch",
+  },
+  playerSmall: {
+    height: 64,
+    paddingBottom: 0,
   },
   translation: {
     paddingTop: 0,

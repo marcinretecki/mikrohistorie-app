@@ -17,7 +17,7 @@ export function ButtonPrimary({ onPress, disabled, children }: ButtonProps) {
   return (
     <BoxShadow shadow={isPressed ? "viewShadowTealMedium" : "viewShadowTeal"}>
       <Pressable
-        onPress={() => onPress}
+        onPress={() => onPress()}
         disabled={disabled}
         onPressIn={() => setIsPressed(true)}
         onPressOut={() => setIsPressed(false)}
