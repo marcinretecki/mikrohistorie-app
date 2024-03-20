@@ -114,6 +114,7 @@ const FragmentWrite = ({
           onFocus={() => pressHandler()}
           blurOnSubmit={false}
           onSubmitEditing={() => nextHandler()}
+          keyboardAppearance="dark"
         />
       </View>
     </BoxShadow>

@@ -4,6 +4,7 @@ import { ScrollView, View } from "react-native";
 
 import { Header } from "@/components/header/Header";
 import { StoryHorizontalList } from "@/components/lists/StoryHorizontalList";
+import { Auth } from "@/components/auth/Auth";
 
 export default function Page() {
   return (
@@ -11,6 +12,7 @@ export default function Page() {
       <ScrollView>
         <Header title="Mikrohistorie" />
         <View style={{ flexDirection: "column", gap: 48, paddingBottom: 48 }}>
+          <Auth />
           <StoryHorizontalList slug="lett" title="Lett" stories={mockStories} />
           <StoryHorizontalList
             slug="ganske-tungt"

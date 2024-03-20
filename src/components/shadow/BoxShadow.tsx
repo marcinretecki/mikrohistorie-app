@@ -1,6 +1,11 @@
-import { Blur, Canvas, Rect, Shadow } from "@shopify/react-native-skia";
+import { Blur, Canvas, Rect } from "@shopify/react-native-skia";
 import React, { PropsWithChildren, useState } from "react";
 import { PixelRatio, View } from "react-native";
+import {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 
 import { theme } from "@/styles/theme";
 
@@ -46,9 +51,3 @@ export const BoxShadow = ({
     </View>
   );
 };
-function useSharedValue(arg0: number) {
-  throw new Error("Function not implemented.");
-}
-function useDerivedValue(arg0: () => number) {
-  throw new Error("Function not implemented.");
-}
