@@ -17,7 +17,11 @@ export interface TypographyProps extends PropsWithChildren {
     | "Lora20SemiBold"
     | "Lora16SemiBold"
     | "Lora12Reg"
-    | "RobotoMono10Medium";
+    | "RobotoMono10Medium"
+    | "Lora24Reg"
+    | "Lora21Reg"
+    | "Lora16Reg"
+    | "Lora16RegTeal";
   style?: object;
 }
 
@@ -104,5 +108,29 @@ const styles = StyleSheet.create({
     fontFamily: "RobotoMono_500Medium",
     fontSize: 10,
     lineHeight: 12,
+  },
+
+  // Keyboard
+  Lora24Reg: {
+    color: theme.colors.text,
+    fontFamily: "Lora_400Regular",
+    fontSize: 24,
+  },
+  Lora21Reg: {
+    color: theme.colors.text,
+    fontFamily: "Lora_400Regular",
+    fontSize: 21,
+  },
+  Lora16Reg: {
+    color: theme.colors.text,
+    fontFamily: "Lora_400Regular",
+    fontSize: 16,
+  },
+  Lora16RegTeal: {
+    color: theme.colors.teal,
+    fontFamily: "Lora_400Regular",
+    fontSize: 16,
+
+    ...theme.shadows.textShadowTealMedium,
   },
 });

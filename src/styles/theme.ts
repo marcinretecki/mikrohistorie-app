@@ -11,6 +11,7 @@ export const theme = {
     bg3: "#18141f",
     bg350: "rgba(24, 20, 31, 0.50)",
     bgBlue: "#1c1f3b",
+    bgBluePressed: "#363A63",
     black60: "rgba(0, 0, 0, 0.60)",
     pressedLayer: "rgba(38, 0, 102, 0.10)",
     green: "#6bfec9",

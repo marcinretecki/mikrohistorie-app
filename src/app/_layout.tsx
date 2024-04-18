@@ -4,19 +4,16 @@ import { BigShouldersText_700Bold } from "@expo-google-fonts/big-shoulders-text"
 import { Lora_400Regular, Lora_600SemiBold } from "@expo-google-fonts/lora";
 import { RobotoMono_500Medium } from "@expo-google-fonts/roboto-mono";
 import { i18n } from "@lingui/core";
-import { Trans } from "@lingui/macro";
 import { I18nProvider } from "@lingui/react";
-import { ThemeProvider, DarkTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { SplashScreen } from "expo-router";
 import { useEffect } from "react";
-import { Platform, Text as ReactText, UIManager } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Platform, UIManager } from "react-native";
 
-import { StoriesProvider } from "@/hooks/useFetchStories";
+import { DefaultLayout } from "@/components/layouts/Default";
+import { LoadingLayout } from "@/components/layouts/Loading";
+import { SessionProvider } from "@/hooks/useSession";
 import { messages } from "@/locales/en/messages";
-import { theme } from "@/styles/theme";
-import { Text } from "@/styles/typography";
 
 if (
   Platform.OS === "android" &&
@@ -50,33 +47,17 @@ export default function RootLayout() {
     console.log("fontsLoaded", fontsLoaded);
 
     return (
-      // centered test text
-
-      <StoriesProvider>
-        <ThemeProvider value={DarkTheme}>
-          <I18nProvider i18n={i18n}>
-            {/* <Header /> */}
-            <SafeAreaProvider>
-              <Stack
-                screenOptions={{
-                  headerStyle: { backgroundColor: theme.colors.bg },
-                  headerTintColor: theme.colors.text,
-                  contentStyle: { backgroundColor: theme.colors.bg },
-                  headerShown: false,
-                }}
-              />
-            </SafeAreaProvider>
-          </I18nProvider>
-        </ThemeProvider>
-      </StoriesProvider>
+      <I18nProvider i18n={i18n}>
+        <SessionProvider>
+          <DefaultLayout />
+        </SessionProvider>
+      </I18nProvider>
     );
   }
 
   return (
     <I18nProvider i18n={i18n}>
-      <ReactText>
-        <Trans>Loading</Trans>
-      </ReactText>
+      <LoadingLayout />
     </I18nProvider>
   );
 }

@@ -38,7 +38,7 @@ const config: ExpoConfig = {
   experiments: {
     tsconfigPaths: true,
   },
-  plugins: ["expo-localization"],
+  plugins: ["expo-localization", "expo-font"],
 };
 
 export default config;

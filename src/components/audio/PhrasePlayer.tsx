@@ -96,7 +96,7 @@ export const PhrasePlayer = () => {
 
 const styles = StyleSheet.create({
   scrollView: {
-    backgroundColor: theme.colors.bg3,
+    backgroundColor: theme.colors.bg,
     flex: 1,
   },
   backWrapper: {

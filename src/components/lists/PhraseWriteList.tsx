@@ -67,15 +67,17 @@ interface FragmentProps {
   isCurrent: boolean;
   isNotDone: boolean;
   index: number;
+  value: string;
   pressHandler: () => void;
   nextHandler: () => void;
   userInputHandler: (index: number, text: string) => void;
 }
-const FragmentWrite = ({
+export const FragmentWrite = ({
   isPlaying,
   isCurrent,
   isNotDone,
   index,
+  value,
   pressHandler,
   nextHandler,
   userInputHandler,
@@ -103,10 +105,11 @@ const FragmentWrite = ({
           autoCapitalize="none"
           autoCorrect={false}
           autoComplete="off"
+          value={value}
           spellCheck={false}
           autoFocus={isCurrent}
           cursorColor={theme.colors.teal}
-          inputMode="text"
+          inputMode="none"
           keyboardType="default"
           contextMenuHidden
           returnKeyType="next"
@@ -115,6 +118,7 @@ const FragmentWrite = ({
           blurOnSubmit={false}
           onSubmitEditing={() => nextHandler()}
           keyboardAppearance="dark"
+          importantForAutofill="no"
         />
       </View>
     </BoxShadow>
