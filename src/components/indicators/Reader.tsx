@@ -1,7 +1,8 @@
+import { View, StyleSheet } from "react-native";
+
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
-import { StoryVersion } from "@/types";
-import { View, StyleSheet } from "react-native";
+import { StoryVersion } from "@/types/types";
 
 interface ReaderProps {
   version: StoryVersion;
@@ -11,7 +12,7 @@ export const Reader = ({ version }: ReaderProps) => {
   return (
     <View style={styles.root}>
       <Text type="Lora12Reg" color={theme.colors.text80}>
-        {version.version}, {version.reader}
+        {version.version_dialect}, {version.reader}
       </Text>
     </View>
   );

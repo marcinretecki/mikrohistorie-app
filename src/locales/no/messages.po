@@ -13,14 +13,22 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/audio/PhraseWriter.tsx:94
+#: src/components/audio/PhraseWriter.tsx:145
 msgid "Check"
 msgstr "Sjekk"
 
 #: src/app/_layout.tsx:78
-msgid "Loading"
-msgstr "Laster"
+#~ msgid "Loading"
+#~ msgstr "Laster"
 
 #: src/components/lists/StoryHorizontalList.tsx:80
 msgid "More"
 msgstr "Flere"
+
+#: src/components/auth/Auth.tsx:99
+msgid "Next"
+msgstr "Neste"
+
+#: src/app/index.tsx:38
+msgid "Settings"
+msgstr "Innstillinger"

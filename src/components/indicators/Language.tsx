@@ -1,7 +1,8 @@
+import { View, StyleSheet } from "react-native";
+
 import { useLocale } from "@/hooks/useLocale";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
-import { View, StyleSheet } from "react-native";
 
 // TODO: Implement language
 export const Language = () => {

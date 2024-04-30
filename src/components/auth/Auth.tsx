@@ -1,22 +1,36 @@
-import { useState } from "react";
-import { View, StyleSheet, TextInput } from "react-native";
+import arrowBackIMG from "@assets/arrow_back.png";
+import { Trans } from "@lingui/macro";
+import { AuthError } from "@supabase/supabase-js";
+import React, { useEffect, useRef, useState } from "react";
+import { View, StyleSheet, TextInput, Pressable, Image } from "react-native";
 
+import { NumberFields } from "./NumberField";
 import { ButtonPrimary } from "../buttons/ButtonPrimary";
+import { Header } from "../header/Header";
+import { EmailInput } from "../inputs/EmailInput";
 
-import { BoxShadow } from "@/components/shadow/BoxShadow";
-import { supabase } from "@/lib/supabase";
+import { typedClient } from "@/lib/supabase";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
-import { NumberFields } from "./NumberField";
+import { errorToast } from "@/toasts/toasts";
 
 export const Auth = () => {
-  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
+  const [step, setStep] = useState(1);
+  const tokenInputRef = useRef<TextInput | null>(null);
+  const [error, setError] = useState<AuthError>();
+
+  useEffect(() => {
+    if (token.length === 6) {
+      verifyOTP();
+    }
+  }, [token]);
 
   const verifyOTP = async () => {
     console.log("verifyOTP", email, token);
-    const { data, error } = await supabase.auth.verifyOtp({
+    const { data, error } = await typedClient.auth.verifyOtp({
       email,
       token,
       type: "email",
@@ -24,50 +38,101 @@ export const Auth = () => {
 
     console.log("data", data);
     console.log("error", error);
+
+    if (error) {
+      setError(error);
+      throw error;
+    }
   };
 
   const sendOTP = async () => {
-    const { data, error } = await supabase.auth.signInWithOtp({
+    setLoading(true);
+    const { data, error } = await typedClient.auth.signInWithOtp({
       email,
     });
+    setLoading(false);
 
-    if (error) throw error;
+    console.log("data", data);
+    console.log("error", error);
+
+    if (error) {
+      setError(error);
+      throw error;
+    }
     // Email sent.
     console.log("Email sent");
 
-    setUserData(data);
+    setStep(2);
   };
+
+  const stepBack = () => {
+    setStep(1);
+    setToken("");
+    setError(undefined);
+  };
+
+  const handleFocus = () => {
+    tokenInputRef.current?.focus();
+  };
+
+  if (step === 1) {
+    return (
+      <View style={styles.root}>
+        <Header title="Mikrohistorie" />
+        <View style={styles.contentWrapper}>
+          <View style={styles.titleWrapper}>
+            <Text type="BSText24Bold">Enter your address email</Text>
+            <Text type="Lora12Reg">
+              We will send a verification code to this address.
+            </Text>
+          </View>
+
+          <EmailInput
+            onChangeText={setEmail}
+            onSubmitEditing={sendOTP}
+            error={error}
+          />
+
+          <View style={styles.buttonWrapper}>
+            <ButtonPrimary onPress={sendOTP} loading={loading}>
+              <Trans>Next</Trans>
+            </ButtonPrimary>
+          </View>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.root}>
-      <Text>Email</Text>
-      <BoxShadow shadow="viewShadowTealMedium">
-        <View style={[styles.phraseWrapper]}>
-          <TextInput
-            style={styles.phraseInput}
-            onChangeText={setEmail}
-            autoFocus
-            cursorColor={theme.colors.teal}
-            keyboardType="email-address"
-            onSubmitEditing={sendOTP}
-            keyboardAppearance="dark"
-          />
+      <Header title="Mikrohistorie" />
+      <View style={styles.contentWrapper}>
+        <View style={styles.titleWrapper}>
+          <Text type="BSText24Bold">Check your inbox</Text>
+          <Text type="Lora12Reg">We sent you a verification code.</Text>
         </View>
-      </BoxShadow>
-      <ButtonPrimary onPress={sendOTP}>Next</ButtonPrimary>
-      <Text>Token</Text>
 
-      <TextInput
-        style={styles.phraseInput}
-        onChangeText={setToken}
-        autoFocus
-        keyboardType="number-pad"
-        onSubmitEditing={verifyOTP}
-        keyboardAppearance="dark"
-      />
+        <TextInput
+          style={styles.hiddenInput}
+          onChangeText={setToken}
+          autoFocus
+          keyboardType="number-pad"
+          onSubmitEditing={verifyOTP}
+          keyboardAppearance="dark"
+          ref={tokenInputRef}
+        />
 
-      <NumberFields value={token} />
-      <Text>{userData ? "userData" : "Not logged in"}</Text>
+        <NumberFields value={token} onPress={handleFocus} error={error} />
+
+        <View style={styles.buttonWrapper}>
+          <Pressable onPress={stepBack} style={styles.backButton}>
+            <Image source={arrowBackIMG} />
+            <Text type="Lora12Reg" color={theme.colors.text80}>
+              Change email address
+            </Text>
+          </Pressable>
+        </View>
+      </View>
     </View>
   );
 };
@@ -75,25 +140,37 @@ export const Auth = () => {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    gap: 16,
-    paddingHorizontal: 32,
-  },
-  phraseWrapper: {
-    flexDirection: "row",
-    alignSelf: "stretch",
-    backgroundColor: theme.colors.bg2,
-    borderWidth: StyleSheet.hairlineWidth,
     alignItems: "center",
-    borderColor: theme.colors.teal,
   },
-  phraseInput: {
+  contentWrapper: {
     flex: 1,
-    height: 48,
     paddingHorizontal: 16,
+    gap: 24,
+    paddingBottom: 16,
+    maxWidth: 360,
+    alignItems: "stretch",
+  },
+  titleWrapper: {
+    alignItems: "center",
+    gap: 8,
+  },
+  hiddenInput: {
+    position: "absolute",
+    width: 1,
+    height: 1,
+    opacity: 0,
+    left: -1000,
+    top: -1000,
+  },
+  buttonWrapper: {
+    flex: 1,
+    alignItems: "stretch",
     justifyContent: "center",
-    color: theme.colors.text,
-    fontFamily: "Lora_400Regular",
-    fontSize: 14,
-    lineHeight: 20,
+  },
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
   },
 });

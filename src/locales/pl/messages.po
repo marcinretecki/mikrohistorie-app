@@ -13,14 +13,22 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/audio/PhraseWriter.tsx:94
+#: src/components/audio/PhraseWriter.tsx:145
 msgid "Check"
 msgstr "Sprawdź"
 
 #: src/app/_layout.tsx:78
-msgid "Loading"
-msgstr "Ładowanie"
+#~ msgid "Loading"
+#~ msgstr "Ładowanie"
 
 #: src/components/lists/StoryHorizontalList.tsx:80
 msgid "More"
 msgstr "Więcej"
+
+#: src/components/auth/Auth.tsx:99
+msgid "Next"
+msgstr "Następny"
+
+#: src/app/index.tsx:38
+msgid "Settings"
+msgstr "Ustawienia"

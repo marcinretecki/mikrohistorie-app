@@ -1,6 +1,6 @@
+import BackPNG from "@assets/back.png";
 import { useNavigation } from "expo-router";
 import { Image, Pressable, StyleSheet } from "react-native";
-import BackPNG from "@assets/back.png";
 
 export const BackButton = () => {
   const navigation = useNavigation();

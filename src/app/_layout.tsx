@@ -5,9 +5,10 @@ import { Lora_400Regular, Lora_600SemiBold } from "@expo-google-fonts/lora";
 import { RobotoMono_500Medium } from "@expo-google-fonts/roboto-mono";
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { SplashScreen } from "expo-router";
-import { useEffect } from "react";
+import { StrictMode, useEffect } from "react";
 import { Platform, UIManager } from "react-native";
 
 import { DefaultLayout } from "@/components/layouts/Default";
@@ -24,6 +25,15 @@ if (
 
 i18n.loadAndActivate({ locale: "pl", messages });
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // ✅ globally default to 60 seconds
+      staleTime: 1000 * 60,
+    },
+  },
+});
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -47,11 +57,15 @@ export default function RootLayout() {
     console.log("fontsLoaded", fontsLoaded);
 
     return (
-      <I18nProvider i18n={i18n}>
-        <SessionProvider>
-          <DefaultLayout />
-        </SessionProvider>
-      </I18nProvider>
+      <StrictMode>
+        <I18nProvider i18n={i18n}>
+          <QueryClientProvider client={queryClient}>
+            <SessionProvider>
+              <DefaultLayout />
+            </SessionProvider>
+          </QueryClientProvider>
+        </I18nProvider>
+      </StrictMode>
     );
   }
 

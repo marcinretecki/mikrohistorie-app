@@ -4,7 +4,7 @@ const config: ExpoConfig = {
   name: "Mikrohistorie",
   slug: "mikrohistorie",
   scheme: "com.mikrohistorie",
-  version: "1.0.0",
+  version: "0.1.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "dark",

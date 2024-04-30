@@ -2,7 +2,14 @@ import pausePNG from "@assets/pause_circle.png";
 import playPNG from "@assets/play_circle.png";
 import { Pressable, View, StyleSheet, Image } from "react-native";
 
-export const PlayPauseButton = ({ onPress, isPlaying }) => {
+interface PlayPauseButtonProps {
+  onPress: () => void;
+  isPlaying: boolean;
+}
+export const PlayPauseButton = ({
+  onPress,
+  isPlaying,
+}: PlayPauseButtonProps) => {
   return (
     <Pressable onPress={onPress}>
       <View style={styles.root}>

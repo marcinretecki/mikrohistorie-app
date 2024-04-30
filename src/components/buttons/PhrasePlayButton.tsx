@@ -17,12 +17,16 @@ export const PhrasePlayButton = ({
       {isPlaying && <RotationView />}
       {isPlaying ? (
         <Image
-          style={[styles.playIcon, !isActive && styles.playIconInactive]}
+          style={[styles.playIcon, !isActive && styles.playIconInactive].filter(
+            Boolean
+          )}
           source={fragmentPlayArrowActiveIMG}
         />
       ) : (
         <Image
-          style={[styles.playIcon, !isActive && styles.playIconInactive]}
+          style={[styles.playIcon, !isActive && styles.playIconInactive].filter(
+            Boolean
+          )}
           source={fragmentPlayArrowIMG}
         />
       )}

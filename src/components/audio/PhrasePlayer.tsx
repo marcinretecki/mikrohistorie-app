@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
+import { Loading } from "@/app/loading/Loading";
 import { BottomPlayer } from "@/components/audio/BottomPlayer";
 import { BackButton } from "@/components/header/BackButton";
 import { Reader } from "@/components/indicators/Reader";
@@ -14,14 +15,14 @@ import { throttle } from "@/utilities/throttle";
 // TODO: add debounce to handleSetPhraseNumber
 export const PhrasePlayer = () => {
   const { story, version } = useStory();
-  const { sound, isLoading, error } = useAudio({ uri: version.audioURI });
+  const { sound, isLoading, error } = useAudio({ uri: version?.audio_uri });
   const [isPlaying, setIsPlaying] = useState(false);
 
   let playbackPositionCheckInterval: NodeJS.Timeout | null = null;
 
   // Phrase base index 1
   const [phraseNumber, setPhraseNumber] = useState(1);
-  const maxPosition = version.text.phrases.length;
+  const maxPosition = version?.phrases.length || 0;
 
   const [handleSetPhraseNumber] = throttle((newPosition: number) => {
     setPhraseNumber(newPosition);
@@ -30,10 +31,10 @@ export const PhrasePlayer = () => {
 
   // play the phrase for 1 second
   const playPhrase = async () => {
-    const timeStart = version.text.phrases[phraseNumber - 1].timeStart;
-    const timeEnd = version.text.phrases[phraseNumber - 1].timeEnd;
+    if (!sound || !version) return;
 
-    if (!sound) return;
+    const timeStart = version.phrases[phraseNumber - 1].timeStart;
+    const timeEnd = version.phrases[phraseNumber - 1].timeEnd;
 
     if (isPlaying) {
       setIsPlaying(false);
@@ -63,6 +64,10 @@ export const PhrasePlayer = () => {
       }
     }, 50);
   };
+
+  if (!story || !version) {
+    return <Loading />;
+  }
 
   return (
     <View style={styles.scrollView}>

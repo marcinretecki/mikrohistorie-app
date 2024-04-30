@@ -1,6 +1,6 @@
 import { Canvas, Rect, Shadow } from "@shopify/react-native-skia";
 import React, { PropsWithChildren, useState } from "react";
-import { PixelRatio, View } from "react-native";
+import { LayoutRectangle, PixelRatio, View } from "react-native";
 
 import { theme } from "@/styles/theme";
 
@@ -12,7 +12,7 @@ export const HeaderShadow = ({
   shadowBlur,
   children,
 }: PropsWithChildren<SkiaShadowProps>) => {
-  const [layout, setLayout] = useState(null);
+  const [layout, setLayout] = useState<LayoutRectangle | null>(null);
   const blur = shadowBlur / PixelRatio.get();
 
   return (

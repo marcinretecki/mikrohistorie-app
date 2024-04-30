@@ -6,8 +6,10 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended",
     "universe/native",
-    "universe/shared/typescript-analysis"
+    "universe/shared/typescript-analysis",
+    "prettier"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -16,7 +18,7 @@
     "project": "./tsconfig.json"
   },
   "plugins": ["@typescript-eslint", "react", "lingui"],
-  "rules": {},
+  "rules": { "prefer-nullish-coalescing": "off" },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.d.ts"],

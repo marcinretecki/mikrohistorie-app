@@ -1,12 +1,26 @@
-import { theme } from "@/styles/theme";
 import React, { useMemo, useState } from "react";
-import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  LayoutChangeEvent,
+  GestureResponderEvent,
+} from "react-native";
 
-const WaveformBar = ({ height, style }) => (
+import { theme } from "@/styles/theme";
+
+interface WaveformBarProps {
+  height: number;
+  style: object;
+}
+const WaveformBar = ({ height, style }: WaveformBarProps) => (
   <View style={[styles.bar, { height: `${height * 100}%` }, style]} />
 );
 
-const StaticWaveform = ({ bars }) => {
+interface StaticWaveformProps {
+  bars: number[];
+}
+const StaticWaveform = ({ bars }: StaticWaveformProps) => {
   return (
     <View style={styles.waveformContainer}>
       {bars.map((height, index) => (
@@ -16,7 +30,11 @@ const StaticWaveform = ({ bars }) => {
   );
 };
 
-const PlaybackWaveform = ({ progress, bars }) => {
+interface PlaybackWaveformProps {
+  progress: number;
+  bars: number[];
+}
+const PlaybackWaveform = ({ progress, bars }: PlaybackWaveformProps) => {
   // Use absolute positioning to overlay the playback bars on top of the static bars
   return (
     <View
@@ -36,11 +54,16 @@ const PlaybackWaveform = ({ progress, bars }) => {
   );
 };
 
-export const Waveform = ({ progress, onSeek, onLayout }) => {
+interface WaveformProps {
+  progress: number;
+  onSeek: (position: number) => void;
+  onLayout: (width: number) => void;
+}
+export const Waveform = ({ progress, onSeek, onLayout }: WaveformProps) => {
   const [waveformWidth, setWaveformWidth] = useState(0);
 
-  const handleTouch = (evt) => {
-    const { locationX } = evt.nativeEvent;
+  const handleTouch = (event: GestureResponderEvent) => {
+    const { locationX } = event.nativeEvent;
     onSeek(locationX);
   };
 
@@ -62,8 +85,8 @@ export const Waveform = ({ progress, onSeek, onLayout }) => {
     });
   }, [waveformWidth]);
 
-  const handleLayout = (evt) => {
-    const { width } = evt.nativeEvent.layout;
+  const handleLayout = (event: LayoutChangeEvent) => {
+    const { width } = event.nativeEvent.layout;
     onLayout(width); // Call the callback function with the measured width
     setWaveformWidth(width);
   };

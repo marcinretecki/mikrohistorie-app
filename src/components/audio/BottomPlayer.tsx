@@ -13,6 +13,7 @@ import {
 } from "react-native";
 
 import { Language } from "../indicators/Language";
+import { Keyboard } from "../keyboard/Keyboard";
 
 import { useStory } from "@/hooks/useStory";
 import { theme } from "@/styles/theme";
@@ -22,16 +23,21 @@ export interface BottomPlayerProps {
   size?: "small" | "big";
   position: number;
   maxPosition: number;
+  keyboardIsOpen?: boolean;
   handleSetPhraseNumber: (newPosition: number) => void;
+  handleKeyboardInput?: (letter?: string) => void;
 }
 
 export const BottomPlayer = ({
   size = "big",
   position,
   maxPosition,
+  keyboardIsOpen = false,
   handleSetPhraseNumber,
+  handleKeyboardInput,
 }: BottomPlayerProps) => {
   const [translationIsOpen, setTranslationIsOpen] = React.useState(false);
+  const isLast = position === maxPosition;
 
   const previousPositionHandler = () => {
     if (position > 1) handleSetPhraseNumber(position - 1);
@@ -47,7 +53,13 @@ export const BottomPlayer = ({
 
   return (
     <View style={styles.root}>
-      <View style={[styles.player, size === "small" && styles.playerSmall]}>
+      <View
+        style={[
+          styles.player,
+          size === "small" && styles.playerSmall,
+          keyboardIsOpen && styles.playerWifKeyboard,
+        ].filter(Boolean)}
+      >
         <View style={styles.buttonWrapper}>
           <Text type="RobotoMono10Medium">
             {position.toString() + "/" + maxPosition}
@@ -59,7 +71,10 @@ export const BottomPlayer = ({
         <BottomPlayerButton onPress={() => currentPositionHandler()}>
           <Image style={styles.playImage} source={playArrowIMG} />
         </BottomPlayerButton>
-        <BottomPlayerButton onPress={() => nextPositionHandler()}>
+        <BottomPlayerButton
+          onPress={() => nextPositionHandler()}
+          disabled={isLast}
+        >
           <Image style={styles.playImage} source={skipNextIMG} />
         </BottomPlayerButton>
         {size === "big" ? (
@@ -72,6 +87,14 @@ export const BottomPlayer = ({
           <View style={styles.buttonWrapper} />
         )}
       </View>
+      {handleKeyboardInput && (
+        <Keyboard
+          isOpen={keyboardIsOpen}
+          onKeyboardInput={handleKeyboardInput}
+          onNext={nextPositionHandler}
+          enterIsActive={!isLast}
+        />
+      )}
       <BottomPlayerTranslation isOpen={translationIsOpen} />
     </View>
   );
@@ -93,7 +116,7 @@ const LanguageButtonContent = ({ language, active }: LanguageButtonProps) => {
         <Text
           type="RobotoMono10Medium"
           style={styles.languageText}
-          color={active && theme.colors.teal}
+          color={active ? theme.colors.teal : undefined}
         >
           {language}
         </Text>
@@ -104,15 +127,23 @@ const LanguageButtonContent = ({ language, active }: LanguageButtonProps) => {
 
 interface BottomPlayerButtonProps {
   children: React.ReactNode;
+  disabled?: boolean;
   onPress: () => void;
 }
 
 export const BottomPlayerButton = ({
   children,
+  disabled = false,
   onPress,
 }: BottomPlayerButtonProps) => {
   return (
-    <Pressable onPress={() => onPress()} style={styles.buttonWrapper}>
+    <Pressable
+      onPress={() => onPress()}
+      style={[
+        styles.buttonWrapper,
+        disabled && styles.buttonWrapperDisabled,
+      ].filter(Boolean)}
+    >
       <View>{children}</View>
     </Pressable>
   );
@@ -139,7 +170,7 @@ export const BottomPlayerTranslation = ({
   return (
     <View style={styles.translation}>
       <Language />
-      <Text type="Lora14Reg">{story.translations.pl}</Text>
+      <Text type="Lora14Reg">{story?.translations.pl}</Text>
     </View>
   );
 };
@@ -164,7 +195,11 @@ const styles = StyleSheet.create({
   },
   playerSmall: {
     height: 64,
+    paddingTop: 0,
     paddingBottom: 0,
+  },
+  playerWifKeyboard: {
+    height: 64,
   },
   translation: {
     paddingTop: 0,
@@ -179,6 +214,9 @@ const styles = StyleSheet.create({
     height: 64,
     justifyContent: "center",
     alignItems: "center",
+  },
+  buttonWrapperDisabled: {
+    opacity: 0.33,
   },
   languageButtonContent: {
     width: 56,

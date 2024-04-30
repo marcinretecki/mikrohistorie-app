@@ -4,12 +4,16 @@
       "@/*": ["./src/*"],
       "@assets/*": ["./assets/*"],
       "@mocks/*": ["./mocks/*"]
-    }
+    },
+    "strictNullChecks": true,
+    "strict": true,
+    "useUnknownInCatchVariables": false
   },
   "extends": "expo/tsconfig.base",
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
   "exclude": ["node_modules"],
   "ts-node": {
     "swc": true
-  }
+  },
+  "ignorePatterns": ["*.d.ts"]
 }

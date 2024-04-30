@@ -1,20 +1,27 @@
 export const theme = {
   colors: {
+    // primary
     teal: "#6bdffe",
     tealPressed: "#64C9EF",
+
+    // text
+    text: "#E3E0F5",
+    text80: "rgba(227, 224, 245, 0.80)",
+    text60: "rgba(227, 224, 245, 0.60)",
+
+    // accents
     pink: "#ff80d4",
+    green: "#6bfec9",
+
+    // background
     bg: "#110e16",
-    text: "#dddaf3",
     bg2: "#0c0a10",
-    text80: "rgba(221, 218, 243, 0.80)",
-    text60: "rgba(221, 218, 243, 0.60)",
     bg3: "#18141f",
     bg350: "rgba(24, 20, 31, 0.50)",
     bgBlue: "#1c1f3b",
     bgBluePressed: "#363A63",
+
     black60: "rgba(0, 0, 0, 0.60)",
-    pressedLayer: "rgba(38, 0, 102, 0.10)",
-    green: "#6bfec9",
     overlayBG: "rgba(9, 5, 15, 0.8)",
   },
   shadows: {

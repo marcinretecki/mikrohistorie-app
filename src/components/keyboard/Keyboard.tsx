@@ -1,19 +1,40 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, LayoutAnimation } from "react-native";
 
 import { LowercaseLayout, NumericLayout, UppercaseLayout } from "./Layouts";
 
 interface KeyboardProps {
-  handleKeyboardInput: (text: string) => void;
+  onKeyboardInput: (text?: string) => void;
+  onNext: () => void;
+  isOpen: boolean;
+  enterIsActive: boolean;
 }
-export const Keyboard = ({ handleKeyboardInput }: KeyboardProps) => {
-  const [keyboardLayout, setKeyboardLayout] = React.useState<
+export const Keyboard = ({
+  onKeyboardInput,
+  onNext,
+  isOpen,
+  enterIsActive = true,
+}: KeyboardProps) => {
+  const [visible, setVisible] = useState(isOpen);
+  const [keyboardLayout, setKeyboardLayout] = useState<
     "lowercase" | "uppercase" | "numeric"
   >("lowercase");
 
-  const handlePress = (letter: string) => {
-    handleKeyboardInput(letter);
+  useEffect(() => {
+    // Animate layout changes when isOpen changes
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setVisible(isOpen);
+  }, [isOpen]);
+
+  const handlePress = (letter?: string) => {
+    onKeyboardInput(letter);
   };
+
+  const handleNext = () => {
+    onNext();
+  };
+
+  if (!visible) return null;
 
   return (
     <View style={styles.keyboardWrapper}>
@@ -21,18 +42,24 @@ export const Keyboard = ({ handleKeyboardInput }: KeyboardProps) => {
         <LowercaseLayout
           setKeyboardLayout={setKeyboardLayout}
           onPress={handlePress}
+          onPressNext={handleNext}
+          enterIsActive={enterIsActive}
         />
       )}
       {keyboardLayout === "uppercase" && (
         <UppercaseLayout
           setKeyboardLayout={setKeyboardLayout}
           onPress={handlePress}
+          onPressNext={handleNext}
+          enterIsActive={enterIsActive}
         />
       )}
       {keyboardLayout === "numeric" && (
         <NumericLayout
           setKeyboardLayout={setKeyboardLayout}
           onPress={handlePress}
+          onPressNext={handleNext}
+          enterIsActive={enterIsActive}
         />
       )}
     </View>
@@ -42,9 +69,8 @@ export const Keyboard = ({ handleKeyboardInput }: KeyboardProps) => {
 const styles = StyleSheet.create({
   keyboardWrapper: {
     width: "100%",
-    height: 292,
-    paddingTop: 6,
-    paddingBottom: 78,
+    paddingTop: 8,
+    paddingBottom: 48,
     paddingHorizontal: 2,
   },
 });

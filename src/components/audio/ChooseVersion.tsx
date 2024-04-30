@@ -1,24 +1,25 @@
 import { useMemo } from "react";
 import { View, StyleSheet, ScrollView, Pressable } from "react-native";
 
+import { TitleContentSection } from "@/components/lists/TitleContentSection";
 import { BoxShadow } from "@/components/shadow/BoxShadow";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
-import { Story, StoryVersion } from "@/types";
-import { TitleContentSection } from "@/components/lists/TitleContentSection";
+import { Story, StoryVersion } from "@/types/types";
 
 interface ChooseVersionProps {
   story: Story;
+  versions: StoryVersion[];
   handleSetVersion: (selectedVersion: StoryVersion) => void;
   activeVersion: StoryVersion;
 }
 
 export const ChooseVersion = ({
   story,
+  versions,
   handleSetVersion,
   activeVersion,
 }: ChooseVersionProps) => {
-  const versions = story.versions;
   return (
     <TitleContentSection title="Dialekt">
       <ScrollView
@@ -30,10 +31,11 @@ export const ChooseVersion = ({
           overflow: "visible",
         }}
       >
-        {versions.map((version) => {
-          const isActive = version.version === activeVersion.version;
+        {versions.map((version: StoryVersion) => {
+          const isActive =
+            version.version_dialect === activeVersion.version_dialect;
           return (
-            <View style={{ marginRight: 8 }} key={version.audioURI}>
+            <View style={{ marginRight: 8 }} key={version.version_id}>
               <StoryVersionItem
                 version={version}
                 isActive={isActive}
@@ -52,7 +54,11 @@ interface StoryVersionItemProps {
   isActive: boolean;
   handleSetVersion: (selectedVersion: StoryVersion) => void;
 }
-const StoryVersionItem = ({ version, isActive, handleSetVersion }) => {
+const StoryVersionItem = ({
+  version,
+  isActive,
+  handleSetVersion,
+}: StoryVersionItemProps) => {
   const versionItemRoot = useMemo(
     () =>
       StyleSheet.flatten([
@@ -67,7 +73,7 @@ const StoryVersionItem = ({ version, isActive, handleSetVersion }) => {
       <Pressable onPress={() => handleSetVersion(version)}>
         <View style={versionItemRoot}>
           <Text type="BSInlineText24Bold" style={styles.versionItemText}>
-            {version.version}
+            {version.version_dialect}
           </Text>
           <Text type="Lora12Reg" style={styles.versionItemText}>
             {version.reader}

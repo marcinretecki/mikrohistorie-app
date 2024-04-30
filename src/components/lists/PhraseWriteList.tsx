@@ -5,7 +5,7 @@ import { PhrasePlayButton } from "@/components/buttons/PhrasePlayButton";
 import { BoxShadow } from "@/components/shadow/BoxShadow";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
-import { StoryVersion, StoryPhrase } from "@/types";
+import { StoryVersion, StoryPhrase } from "@/types/types";
 
 interface PhraseWriteListProps {
   version: StoryVersion;
@@ -25,7 +25,7 @@ export const PhraseWriteList = ({
   handleSetPhraseNumber,
   handleUserInput,
 }: PhraseWriteListProps) => {
-  const phrases = version.text.phrases;
+  const phrases = version.phrases;
 
   return (
     <View style={styles.root}>
@@ -51,10 +51,10 @@ export const PhraseWriteList = ({
             isCurrent={baseIndex === currentPhraseNumber}
             isPlaying={baseIndex === currentPhraseNumber && isPlaying}
             isNotDone={baseIndex > currentPhraseNumber}
-            pressHandler={() => handleSetPhraseNumber(baseIndex)}
-            userInputHandler={handleUserInput}
+            onPress={() => handleSetPhraseNumber(baseIndex)}
+            value={userInputValues[baseIndex] || ""}
             index={baseIndex}
-            nextHandler={() => handleSetPhraseNumber(baseIndex + 1)}
+            onNext={() => handleSetPhraseNumber(baseIndex + 1)}
           />
         );
       })}
@@ -68,9 +68,8 @@ interface FragmentProps {
   isNotDone: boolean;
   index: number;
   value: string;
-  pressHandler: () => void;
-  nextHandler: () => void;
-  userInputHandler: (index: number, text: string) => void;
+  onPress: () => void;
+  onNext: () => void;
 }
 export const FragmentWrite = ({
   isPlaying,
@@ -78,9 +77,8 @@ export const FragmentWrite = ({
   isNotDone,
   index,
   value,
-  pressHandler,
-  nextHandler,
-  userInputHandler,
+  onPress,
+  onNext,
 }: FragmentProps) => {
   const inputRef = useRef<TextInput | null>(null);
 
@@ -94,14 +92,16 @@ export const FragmentWrite = ({
   return (
     <BoxShadow shadow={isCurrent ? "viewShadowTealMedium" : "viewShadowTeal"}>
       <View
-        style={[styles.phraseWrapper, isCurrent && styles.phraseWrapperCurrent]}
+        style={[
+          styles.phraseWrapper,
+          isCurrent && styles.phraseWrapperCurrent,
+        ].filter(Boolean)}
       >
-        <Pressable onPress={() => pressHandler()}>
+        <Pressable onPress={() => onPress()}>
           <PhrasePlayButton isPlaying={isPlaying} isActive={!isNotDone} />
         </Pressable>
         <TextInput
           style={[styles.phraseInput, styles.phraseContent]}
-          onChangeText={(text) => userInputHandler(index, text)}
           autoCapitalize="none"
           autoCorrect={false}
           autoComplete="off"
@@ -114,11 +114,12 @@ export const FragmentWrite = ({
           contextMenuHidden
           returnKeyType="next"
           ref={inputRef}
-          onFocus={() => pressHandler()}
+          onFocus={() => onPress()}
           blurOnSubmit={false}
-          onSubmitEditing={() => nextHandler()}
+          onSubmitEditing={() => onNext()}
           keyboardAppearance="dark"
           importantForAutofill="no"
+          showSoftInputOnFocus={false}
         />
       </View>
     </BoxShadow>
@@ -147,7 +148,7 @@ const FragmentChecked = ({
   return (
     <BoxShadow shadow={isCurrent ? "viewShadowTealMedium" : "viewShadowTeal"}>
       <Pressable onPress={() => pressHandler()}>
-        <View style={[styles.phraseWrapper]}>
+        <View style={styles.phraseWrapper}>
           <PhrasePlayButton isPlaying={isPlaying} isActive />
 
           <View style={styles.phraseCheckedContent}>
@@ -180,7 +181,10 @@ const compareAndGenerateComponents = (phrase: string, userInput: string) => {
   return inputWords.map((word, index) => {
     const match = phraseWords[index].toLowerCase() === word.toLowerCase();
     return (
-      <Text style={match && styles.correctText} key={word + index}>
+      <Text
+        style={[match && styles.correctText].filter(Boolean)}
+        key={word + index}
+      >
         {word + " "}
       </Text>
     );

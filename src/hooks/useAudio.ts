@@ -2,7 +2,7 @@ import { Audio } from "expo-av";
 import { useEffect, useState } from "react";
 
 interface useAudioProps {
-  uri: string;
+  uri?: string;
 }
 export const useAudio = ({ uri }: useAudioProps) => {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
@@ -11,6 +11,10 @@ export const useAudio = ({ uri }: useAudioProps) => {
 
   useEffect(() => {
     const loadAudio = async () => {
+      if (!uri) {
+        setIsLoading(false);
+        return;
+      }
       setIsLoading(true);
       setError(null);
 
@@ -26,6 +30,7 @@ export const useAudio = ({ uri }: useAudioProps) => {
         }
       } catch (e) {
         setError("Could not load audio");
+        console.error("Error loading audio", e);
         setIsLoading(false);
       }
     };

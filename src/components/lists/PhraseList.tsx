@@ -4,7 +4,7 @@ import { PhrasePlayButton } from "@/components/buttons/PhrasePlayButton";
 import { BoxShadow } from "@/components/shadow/BoxShadow";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
-import { StoryVersion, StoryPhrase } from "@/types";
+import { StoryVersion, StoryPhrase } from "@/types/types";
 
 interface PhraseListProps {
   version: StoryVersion;
@@ -18,7 +18,7 @@ export const PhraseList = ({
   isPlaying,
   handleSetPhraseNumber,
 }: PhraseListProps) => {
-  const phrases = version.text.phrases;
+  const phrases = version.phrases;
 
   return (
     <View style={styles.root}>

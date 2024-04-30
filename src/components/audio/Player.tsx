@@ -13,7 +13,7 @@ import { PlayPauseButton } from "@/components/buttons/PlayPauseButton";
 import { SkipButton } from "@/components/buttons/SkipButton";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
-import { Story } from "@/types";
+import { Story } from "@/types/types";
 
 interface PlayerProps {
   uri: string;
@@ -30,7 +30,7 @@ export const Player = ({ uri, story }: PlayerProps) => {
   const { height, width } = useWindowDimensions();
   const [waveformWidth, setWaveformWidth] = useState(width); // Default to screenWidth, update with actual width
 
-  const handleWaveformLayout = (width) => {
+  const handleWaveformLayout = (width: number) => {
     setWaveformWidth(width);
   };
 
@@ -45,7 +45,7 @@ export const Player = ({ uri, story }: PlayerProps) => {
           { shouldPlay: false }
         );
 
-        if (status.isLoaded) {
+        if (status.isLoaded && status.durationMillis) {
           setSound(newSound);
           setDuration(status.durationMillis);
           setIsLoading(false);
@@ -114,7 +114,7 @@ export const Player = ({ uri, story }: PlayerProps) => {
     return `${minutes}:${seconds.padStart(2, "0")}`;
   };
 
-  const handleSeek = (locationX) => {
+  const handleSeek = (locationX: number) => {
     const progress = Math.max(0, Math.min(locationX / waveformWidth, 1));
     const newPosition = progress * (duration ?? 0);
     sound?.setPositionAsync(newPosition);

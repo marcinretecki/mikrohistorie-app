@@ -1,24 +1,15 @@
-import {
-  Stack,
-  useLocalSearchParams,
-  useNavigation,
-  usePathname,
-} from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import { FlatList, View, StyleSheet } from "react-native";
+import { FlatList, View } from "react-native";
 
-import { theme } from "@/styles/theme";
-import { Text } from "@/styles/typography";
 import { Header } from "@/components/header/Header";
 import { StoryListItem } from "@/components/lists/StoryListItem";
 import { useStories } from "@/hooks/useFetchStories";
 
-type ItemProps = { title: string };
-
 export default function Page() {
   const { slug } = useLocalSearchParams();
   const storiesContext = useStories();
-  const cleanSlug = slug instanceof Array ? slug[0] : slug;
+  const cleanSlug = slug instanceof Array ? slug[0] : slug ? slug : "";
 
   // search for all stories with the same level as the slug
   const stories = storiesContext.stories.filter(

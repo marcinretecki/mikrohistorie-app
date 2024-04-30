@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 
 import { StoryModeButton } from "@/components/buttons/StoryModeButton";
 import { TitleContentSection } from "@/components/lists/TitleContentSection";
-import { Story } from "@/types";
+import { Story } from "@/types/types";
 
 interface StoryModesProps {
   story: Story;

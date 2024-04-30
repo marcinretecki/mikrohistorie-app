@@ -6,7 +6,7 @@ import { View, StyleSheet, Image } from "react-native";
 import { Steps } from "./Steps";
 
 import { Text } from "@/styles/typography";
-import { Indicator } from "@/types";
+import { Indicator } from "@/types/types";
 
 export function Indicators(props: Indicator) {
   const styles = stylesheet;
@@ -17,7 +17,7 @@ export function Indicators(props: Indicator) {
 
   return (
     <View style={styles.root}>
-      <Steps step={props.step} />
+      <Steps versionsProgress={[]} />
       <View style={styles.wrapper}>
         <Image source={SchedulePNG} style={styles.icon} />
         <Text type="RobotoMono10Medium">{timeString}</Text>

@@ -7,7 +7,8 @@ import {
   ReactNode,
 } from "react";
 
-import { supabase } from "@/lib/supabase";
+import { typedClient } from "@/lib/supabase";
+import { Text } from "@/styles/typography";
 
 const SessionContext = createContext<Session | null>(null);
 
@@ -17,11 +18,11 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    typedClient.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
+    const { data: listener } = typedClient.auth.onAuthStateChange(
       (_event, newSession) => {
         setSession(newSession);
       }

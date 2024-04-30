@@ -1,6 +1,7 @@
 import { View, StyleSheet } from "react-native";
-import { Text } from "@/styles/typography";
+
 import { theme } from "@/styles/theme";
+import { Text } from "@/styles/typography";
 
 export const Footer = () => {
   return (

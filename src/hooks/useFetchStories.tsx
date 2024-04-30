@@ -1,22 +1,25 @@
 import { useEffect, useReducer, createContext, useContext } from "react";
-import { storiesRepository } from "../repositories/storiesMockRepository";
-import { Story } from "@/types";
+
+import { storiesRepository } from "../repositories/storiesRepository";
+
+import { errorToast } from "@/toasts/toasts";
+import { Stories } from "@/types/types";
 
 type StoriesState = {
-  stories: Story[];
+  stories: Stories;
   loading: boolean;
   error: boolean;
 };
 
 type StoriesAction =
   | { type: "LOADING" }
-  | { type: "SUCCESS"; payload: Story[] }
+  | { type: "SUCCESS"; payload: Stories }
   | { type: "FAILURE" };
 
 // Action Creators
 const storiesActionCreators = {
   loading: (): StoriesAction => ({ type: "LOADING" }),
-  success: (stories: Story[]): StoriesAction => ({
+  success: (stories: Stories): StoriesAction => ({
     type: "SUCCESS",
     payload: stories,
   }),
@@ -61,9 +64,13 @@ const useFetchStories = (): StoriesState => {
           throw new Error("Network response was not ok");
         }
         const stories = response.stories;
+        if (!stories) {
+          throw new Error("No data returned");
+        }
         dispatch(storiesActionCreators.success(stories));
       } catch (error) {
         console.error("Fetching stories failed:", error);
+        errorToast(error.message);
         dispatch(storiesActionCreators.failure());
       }
     };
@@ -78,7 +85,10 @@ const useFetchStories = (): StoriesState => {
 const StoriesContext = createContext<StoriesState | undefined>(undefined);
 
 // Provider
-export const StoriesProvider = ({ children }) => {
+interface StoriesProviderProps {
+  children: React.ReactNode;
+}
+export const StoriesProvider = ({ children }: StoriesProviderProps) => {
   const state = useFetchStories();
 
   return (

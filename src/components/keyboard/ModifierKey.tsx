@@ -17,9 +17,14 @@ interface ModifierKeyProps {
     | "enter"
     | "numbers"
     | "numbersActive";
-  onPress: (text: string) => void;
+  onPress: (text?: string) => void;
+  disabled?: boolean;
 }
-export const ModifierKey = ({ symbol, onPress }: ModifierKeyProps) => {
+export const ModifierKey = ({
+  symbol,
+  onPress,
+  disabled = false,
+}: ModifierKeyProps) => {
   const [isPressed, setIsPressed] = React.useState(false);
   const isWide =
     symbol === "numbers" || symbol === "enter" || symbol === "numbersActive";
@@ -35,6 +40,8 @@ export const ModifierKey = ({ symbol, onPress }: ModifierKeyProps) => {
     return <Backspace onPress={onPress} />;
   }
 
+  console.log("enter disabled: ", disabled);
+
   return (
     <Pressable
       onPress={() => handlePress()}
@@ -48,7 +55,8 @@ export const ModifierKey = ({ symbol, onPress }: ModifierKeyProps) => {
           isWide && styles.keyWrapperWide,
           isActive && styles.keyWrapperActive,
           isEnter && styles.keyWrapperEnter,
-        ]}
+          disabled && styles.keyWrapperStateDisabled,
+        ].filter(Boolean)}
       >
         {symbol === "numbers" && (
           <View style={styles.keyContent}>
@@ -119,7 +127,10 @@ const Backspace = ({ onPress }: { onPress: (text: string) => void }) => {
       onPressOut={() => handlePressOut()}
     >
       <View
-        style={[styles.keyWrapper, isPressed && styles.keyWrapperStatePressed]}
+        style={[
+          styles.keyWrapper,
+          isPressed && styles.keyWrapperStatePressed,
+        ].filter(Boolean)}
       >
         <View style={styles.symbol}>
           <Image source={backspaceIMG} />
@@ -137,6 +148,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: theme.colors.bg3,
+  },
+  keyWrapperStateDisabled: {
+    opacity: 0.33,
+    backgroundColor: theme.colors.tealPressed,
   },
   keyWrapperStatePressed: {
     backgroundColor: theme.colors.bgBluePressed,

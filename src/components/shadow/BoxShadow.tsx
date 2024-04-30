@@ -1,11 +1,6 @@
 import { Blur, Canvas, Rect } from "@shopify/react-native-skia";
 import React, { PropsWithChildren, useState } from "react";
-import { PixelRatio, View } from "react-native";
-import {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated";
+import { LayoutRectangle, PixelRatio, View } from "react-native";
 
 import { theme } from "@/styles/theme";
 
@@ -17,7 +12,7 @@ export const BoxShadow = ({
   shadow = "viewShadowTeal",
   children,
 }: PropsWithChildren<SkiaShadowProps>) => {
-  const [layout, setLayout] = useState(null);
+  const [layout, setLayout] = useState<LayoutRectangle | null>(null);
   const blur = theme.shadows[shadow].blur;
 
   const blur2 = blur * 2;

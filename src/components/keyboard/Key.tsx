@@ -8,7 +8,7 @@ import { theme } from "@/styles/theme";
 interface KeyProps {
   letter: string;
   variant?: "default" | "uppercase" | "spacebar";
-  onPress: (text: string) => void;
+  onPress: (text?: string) => void;
 }
 export const Key = ({ letter, variant = "default", onPress }: KeyProps) => {
   const [isPressed, setIsPressed] = React.useState(false);
@@ -29,17 +29,17 @@ export const Key = ({ letter, variant = "default", onPress }: KeyProps) => {
         styles.keyWrapper,
         isPressed && styles.keyWrapperStatePressed,
         isSpacebar && styles.keyWrapperSpacebar,
-      ]}
+      ].filter(Boolean)}
     >
       <View
         style={[
           styles.keyContent,
           isUppercase && styles.keyContentUppercase,
           isSpacebar && styles.keyContentSpacebar,
-        ]}
+        ].filter(Boolean)}
       >
         <Text
-          style={[styles.key]}
+          style={styles.keyText}
           type={
             isUppercase ? "Lora21Reg" : isSpacebar ? "Lora16Reg" : "Lora24Reg"
           }
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -2 }],
   },
 
-  key: {
+  keyText: {
     textAlign: "center",
     verticalAlign: "middle",
   },

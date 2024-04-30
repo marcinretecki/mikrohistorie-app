@@ -1,1 +1,1 @@
-/*eslint-disable*/export const messages=JSON.parse("{\"9td1Wl\":\"Check\",\"yQE2r9\":\"Loading\",\"2FYpfJ\":\"More\"}");
+/*eslint-disable*/export const messages=JSON.parse("{\"pDgeaz\":[[\"title\"]],\"9td1Wl\":\"Check\",\"yQE2r9\":\"Loading\",\"2FYpfJ\":\"More\",\"hXzOVo\":\"Next\",\"Tz0i8g\":\"Settings\"}");

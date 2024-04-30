@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, ScrollView } from "react-native";
 
+import { Loading } from "@/app/loading/Loading";
 import { ChooseVersion } from "@/components/audio/ChooseVersion";
 import { Player } from "@/components/audio/Player";
 import { Footer } from "@/components/footer/Footer";
@@ -9,18 +10,26 @@ import { Indicators } from "@/components/indicators/Indicators";
 import { StoryModes } from "@/components/lists/StoryModes";
 import { useStory } from "@/hooks/useStory";
 import { theme } from "@/styles/theme";
-import { StoryVersion } from "@/types";
+import { StoryVersion } from "@/types/types";
 
 export default function Page() {
-  const { story } = useStory();
+  const { story, versions } = useStory();
 
-  const [version, setVersion] = useState<StoryVersion>(
-    story ? story.versions[0] : null
-  );
+  const [version, setVersion] = useState<StoryVersion | null>(null);
+
+  useEffect(() => {
+    if (versions) {
+      setVersion(versions[0]);
+    }
+  }, [versions]);
 
   const handleSetVersion = (selectedVersion: StoryVersion) => {
     setVersion(selectedVersion);
   };
+
+  if (!story || !version) {
+    return <Loading />;
+  }
 
   return (
     <ScrollView>
@@ -32,11 +41,11 @@ export default function Page() {
             <Image
               style={styles.backgroundImage}
               source={{
-                uri: story.imageURI,
+                uri: story.image_uri,
               }}
             />
             <View style={styles.audioPlayer}>
-              <Player uri={version.audioURI} story={story} />
+              <Player uri={version.audio_uri} story={story} />
               <View style={styles.backWrapper}>
                 <BackButton />
               </View>
@@ -47,10 +56,11 @@ export default function Page() {
         </View>
         <ChooseVersion
           story={story}
+          versions={versions}
           activeVersion={version}
           handleSetVersion={handleSetVersion}
         />
-        <StoryModes version={version.version} story={story} />
+        <StoryModes version={version.version_dialect} story={story} />
         <Footer />
       </View>
     </ScrollView>

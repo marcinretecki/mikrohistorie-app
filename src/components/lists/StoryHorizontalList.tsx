@@ -1,4 +1,5 @@
 import ForwardPNG from "@assets/forward.png";
+import { Trans } from "@lingui/macro";
 import { Link } from "expo-router";
 import React from "react";
 import { StyleSheet, View, FlatList, Image, Pressable } from "react-native";
@@ -7,11 +8,10 @@ import { StoryListItem } from "./StoryListItem";
 
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
-import { Story } from "@/types";
-import { Trans } from "@lingui/macro";
+import { Stories, Story } from "@/types/types";
 
 export interface StoryListProps {
-  stories: Story[];
+  stories: Stories;
   title: string;
   slug: string;
 }
@@ -33,7 +33,11 @@ export function StoryHorizontalList({ stories, title, slug }: StoryListProps) {
   );
 }
 
-const renderItem = ({ item, index }) => (
+interface StoryListItemProps {
+  item: Story;
+  index: number;
+}
+const renderItem = ({ item, index }: StoryListItemProps) => (
   <View style={{ marginRight: 16 }}>
     <StoryListItem story={item} size="Narrow" />
   </View>

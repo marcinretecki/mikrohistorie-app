@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 
 import { ButtonPrimary } from "../buttons/ButtonPrimary";
 
+import { Loading } from "@/app/loading/Loading";
 import { BottomPlayer } from "@/components/audio/BottomPlayer";
 import { BackButton } from "@/components/header/BackButton";
 import { Reader } from "@/components/indicators/Reader";
@@ -20,17 +21,17 @@ interface UserInputValues {
 export const PhraseWriter = () => {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const { story, version } = useStory();
-  const { sound, isLoading, error } = useAudio({ uri: version.audioURI });
+  const { sound, isLoading, error } = useAudio({ uri: version?.audio_uri });
   const [isPlaying, setIsPlaying] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [playingPhrase, setPlayingPhrase] = useState(0);
   const [userInputValues, setUserInputValues] = useState<UserInputValues>({});
 
-  let playbackPositionCheckInterval: NodeJS.Timeout | null = null;
-
   // Phrase base index 1
   const [phraseNumber, setPhraseNumber] = useState(1);
-  const maxPosition = version.text.phrases.length;
+
+  const maxPosition = version?.phrases.length || 0;
+  let playbackPositionCheckInterval: NodeJS.Timeout | null = null;
 
   const handleSetPhraseNumber = (newPosition: number) => {
     if (newPosition < 1 || newPosition > maxPosition) return;
@@ -40,17 +41,38 @@ export const PhraseWriter = () => {
 
   const handleCheck = () => {
     console.log("handleCheck");
+    setPhraseNumber(1);
     setIsChecked(true);
-    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+    }
   };
 
   const handleUserInput = useCallback((index: number, text: string) => {
     setUserInputValues((prev) => ({ ...prev, [index]: text }));
   }, []);
 
+  const handleKeyboardInput = (letter?: string) => {
+    setUserInputValues((prev) => {
+      const currentText = prev[phraseNumber] || "";
+
+      let newText = "";
+      if (letter === "") {
+        newText = currentText.slice(0, -1); // handle backspace
+      } else {
+        newText = currentText + letter; // handle normal input
+      }
+
+      return {
+        ...prev,
+        [phraseNumber]: newText,
+      };
+    });
+  };
+
   // play the phrase for 1 second
   const playPhrase = async (newPosition: number) => {
-    if (!sound) return;
+    if (!sound || !version) return;
 
     console.log("playPhrase", newPosition);
 
@@ -65,8 +87,8 @@ export const PhraseWriter = () => {
       await sound.pauseAsync();
     }
 
-    const timeStart = version.text.phrases[newPosition - 1].timeStart;
-    const timeEnd = version.text.phrases[newPosition - 1].timeEnd;
+    const timeStart = version.phrases[newPosition - 1].timeStart;
+    const timeEnd = version.phrases[newPosition - 1].timeEnd;
     await sound.setPositionAsync(timeStart);
     await sound.playAsync();
     setIsPlaying(true);
@@ -94,6 +116,10 @@ export const PhraseWriter = () => {
     }, 50);
   };
 
+  if (!version || !story) {
+    return <Loading />;
+  }
+
   return (
     <View style={styles.scrollView}>
       <ScrollView style={styles.scrollView} ref={scrollViewRef}>
@@ -116,22 +142,26 @@ export const PhraseWriter = () => {
               isChecked={isChecked}
             />
           </View>
-          <View style={styles.contentWrapper}>
-            <ButtonPrimary
-              onPress={() => {
-                handleCheck();
-              }}
-            >
-              <Trans>Check</Trans>
-            </ButtonPrimary>
-          </View>
+          {!isChecked && (
+            <View style={styles.contentWrapper}>
+              <ButtonPrimary
+                onPress={() => {
+                  handleCheck();
+                }}
+              >
+                <Trans>Check</Trans>
+              </ButtonPrimary>
+            </View>
+          )}
         </View>
       </ScrollView>
       <BottomPlayer
         position={phraseNumber}
         handleSetPhraseNumber={handleSetPhraseNumber}
+        handleKeyboardInput={handleKeyboardInput}
         maxPosition={maxPosition}
         size={isChecked ? "big" : "small"}
+        keyboardIsOpen={!isChecked}
       />
     </View>
   );

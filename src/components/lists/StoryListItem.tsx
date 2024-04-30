@@ -1,10 +1,10 @@
+import { Link } from "expo-router";
 import React from "react";
 import { View, Image, StyleSheet, Pressable } from "react-native";
 
 import { Indicators } from "@/components/indicators/Indicators";
 import { Text } from "@/styles/typography";
-import { Indicator, Story } from "@/types";
-import { Link } from "expo-router";
+import { Indicator, Story } from "@/types/types";
 
 export interface StoryListItemProps {
   story: Story;
@@ -29,7 +29,7 @@ export function StoryListItem({ story, size }: StoryListItemProps) {
         <View style={isWide ? styles.wide : styles.narrow}>
           <Image
             source={{
-              uri: story.imageURI,
+              uri: story.image_uri,
             }}
             style={
               isWide ? { width: 104, height: 104 } : { width: 128, height: 128 }

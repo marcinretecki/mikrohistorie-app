@@ -1,24 +1,34 @@
-import { theme } from "@/styles/theme";
 import React from "react";
 import { View, StyleSheet } from "react-native";
 
+import { theme } from "@/styles/theme";
+import { Progress } from "@/types/types";
+
 export interface StepsProps {
-  step: 1 | 2 | 3 | 0;
-  testID?: string;
+  versionsProgress: Progress[];
 }
 
-export function Steps(props: StepsProps) {
+export function Steps({ versionsProgress }: StepsProps) {
   const styles = stylesheet;
 
   return (
-    <View style={styles.root} testID={props.testID}>
-      <View style={styles.row} testID="30:1659">
-        {[...Array(3)].map((_, index) => (
-          <View
-            key={index}
-            style={index < props.step ? styles.circleActive : styles.circle}
-          />
-        ))}
+    <View style={styles.root}>
+      <View style={styles.row}>
+        {versionsProgress.map((progress, index) => {
+          const step1 = progress.repeat || progress.write;
+          const step2 = progress.repeat && progress.write;
+
+          return (
+            <View
+              key={index}
+              style={[
+                styles.circle,
+                step1 && styles.circleStep1,
+                step2 && styles.circleStep2,
+              ].filter(Boolean)}
+            />
+          );
+        })}
       </View>
     </View>
   );
@@ -46,10 +56,12 @@ const stylesheet = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: theme.colors.black60,
   },
-  circleActive: {
-    width: 6,
-    height: 6,
-    borderRadius: 6,
+  circleStep1: {
     backgroundColor: theme.colors.teal,
+    opacity: 0.33,
+  },
+  circleStep2: {
+    backgroundColor: theme.colors.teal,
+    opacity: 1,
   },
 });

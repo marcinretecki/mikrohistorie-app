@@ -6,12 +6,16 @@ import { ModifierKey } from "./ModifierKey";
 
 interface KeyboardLayoutProps {
   setKeyboardLayout: (layout: "lowercase" | "uppercase" | "numeric") => void;
-  onPress: (text: string) => void;
+  onPress: (text?: string) => void;
+  onPressNext: () => void;
+  enterIsActive?: boolean;
 }
 
 export const LowercaseLayout = ({
   setKeyboardLayout,
   onPress,
+  onPressNext,
+  enterIsActive = true,
 }: KeyboardLayoutProps) => {
   return (
     <View style={styles.rowWrapper}>
@@ -78,7 +82,11 @@ export const LowercaseLayout = ({
         <KeyPlaceholder />
         <KeyPlaceholder />
         <View style={styles.positionRight}>
-          <ModifierKey symbol="enter" onPress={() => {}} />
+          <ModifierKey
+            symbol="enter"
+            onPress={onPressNext}
+            disabled={!enterIsActive}
+          />
         </View>
       </View>
     </View>
@@ -88,8 +96,10 @@ export const LowercaseLayout = ({
 export const UppercaseLayout = ({
   setKeyboardLayout,
   onPress,
+  onPressNext,
+  enterIsActive = true,
 }: KeyboardLayoutProps) => {
-  const handlePress = (letter: string) => {
+  const handlePress = (letter?: string) => {
     onPress(letter);
     setKeyboardLayout("lowercase");
   };
@@ -158,7 +168,11 @@ export const UppercaseLayout = ({
         <KeyPlaceholder />
         <KeyPlaceholder />
         <View style={styles.positionRight}>
-          <ModifierKey symbol="enter" onPress={() => {}} />
+          <ModifierKey
+            symbol="enter"
+            onPress={onPressNext}
+            disabled={!enterIsActive}
+          />
         </View>
       </View>
     </View>
@@ -168,6 +182,8 @@ export const UppercaseLayout = ({
 export const NumericLayout = ({
   setKeyboardLayout,
   onPress,
+  onPressNext,
+  enterIsActive = true,
 }: KeyboardLayoutProps) => {
   return (
     <View style={styles.rowWrapper}>
@@ -231,7 +247,11 @@ export const NumericLayout = ({
         <KeyPlaceholder />
         <KeyPlaceholder />
         <View style={styles.positionRight}>
-          <ModifierKey symbol="enter" onPress={() => {}} />
+          <ModifierKey
+            symbol="enter"
+            onPress={onPressNext}
+            disabled={!enterIsActive}
+          />
         </View>
       </View>
     </View>

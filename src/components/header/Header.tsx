@@ -1,16 +1,22 @@
 import { View, StyleSheet } from "react-native";
 
 import { BackButton } from "@/components/header/BackButton";
+import { HeaderShadow } from "@/components/shadow/HeaderShadow";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
-import { HeaderShadow } from "@/components/shadow/HeaderShadow";
 
-export function Header({ title }: { title: string }) {
+interface HeaderProps {
+  title: string;
+  hasBackButton?: boolean;
+}
+export function Header({ title, hasBackButton = true }: HeaderProps) {
   return (
     <View style={styles.container}>
-      <View style={styles.backWrapper}>
-        <BackButton />
-      </View>
+      {hasBackButton && (
+        <View style={styles.backWrapper}>
+          <BackButton />
+        </View>
+      )}
       <Text type="BSInlineDisplay76Bold">{title}</Text>
     </View>
   );
