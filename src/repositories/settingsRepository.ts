@@ -12,14 +12,13 @@ interface InsertSettingsProps {
   settings: Partial<Settings>;
 }
 export const settingsRepository = {
-  getSettings: async ({ id }: GetSettingsProps) => {
-    return typedClient
+  getSettings: async ({ id }: GetSettingsProps) =>
+    typedClient
       .from("settings")
       .select()
       .eq("id", id)
       .returns<Settings[]>()
-      .throwOnError();
-  },
+      .throwOnError(),
   updateSettings: async ({ id, settings }: UpdateSettingsProps) => {
     const updates = {
       ...settings,

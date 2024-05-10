@@ -7,8 +7,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Kitchensink } from "../kitchensink/Kitchensink";
 
 import { Auth } from "@/components/auth/Auth";
-import { StoriesProvider } from "@/hooks/useFetchStories";
 import { useSession } from "@/hooks/useSession";
+import { StoriesProvider } from "@/providers/storiesProvider";
 import { UserProvider } from "@/providers/userProvider";
 import { theme } from "@/styles/theme";
 

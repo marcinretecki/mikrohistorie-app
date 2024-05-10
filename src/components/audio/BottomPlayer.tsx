@@ -1,9 +1,10 @@
 import languageIMG from "@assets/language.png";
 import languageTealIMG from "@assets/language_teal.png";
 import playArrowIMG from "@assets/play_arrow.png";
+import playArrowActiveIMG from "@assets/play_arrow_active.png";
 import skipNextIMG from "@assets/skip_next.png";
 import skipPreviousIMG from "@assets/skip_previous.png";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Image,
   LayoutAnimation,
@@ -24,6 +25,7 @@ export interface BottomPlayerProps {
   position: number;
   maxPosition: number;
   keyboardIsOpen?: boolean;
+  isPlaying?: boolean;
   handleSetPhraseNumber: (newPosition: number) => void;
   handleKeyboardInput?: (letter?: string) => void;
 }
@@ -32,24 +34,28 @@ export const BottomPlayer = ({
   size = "big",
   position,
   maxPosition,
+  isPlaying = false,
   keyboardIsOpen = false,
   handleSetPhraseNumber,
   handleKeyboardInput,
 }: BottomPlayerProps) => {
   const [translationIsOpen, setTranslationIsOpen] = React.useState(false);
-  const isLast = position === maxPosition;
+  const isLast = useMemo(
+    () => position === maxPosition,
+    [position, maxPosition],
+  );
 
-  const previousPositionHandler = () => {
+  const previousPositionHandler = useCallback(() => {
     if (position > 1) handleSetPhraseNumber(position - 1);
-  };
+  }, [position]);
 
-  const nextPositionHandler = () => {
+  const nextPositionHandler = useCallback(() => {
     if (position < maxPosition) handleSetPhraseNumber(position + 1);
-  };
+  }, [position, maxPosition]);
 
-  const currentPositionHandler = () => {
+  const currentPositionHandler = useCallback(() => {
     handleSetPhraseNumber(position);
-  };
+  }, [position]);
 
   return (
     <View style={styles.root}>
@@ -69,7 +75,11 @@ export const BottomPlayer = ({
           <Image style={styles.playImage} source={skipPreviousIMG} />
         </BottomPlayerButton>
         <BottomPlayerButton onPress={() => currentPositionHandler()}>
-          <Image style={styles.playImage} source={playArrowIMG} />
+          {isPlaying ? (
+            <Image style={styles.playImage} source={playArrowActiveIMG} />
+          ) : (
+            <Image style={styles.playImage} source={playArrowIMG} />
+          )}
         </BottomPlayerButton>
         <BottomPlayerButton
           onPress={() => nextPositionHandler()}

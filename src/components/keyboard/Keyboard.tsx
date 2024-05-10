@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, StyleSheet, LayoutAnimation } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { LowercaseLayout, NumericLayout, UppercaseLayout } from "./Layouts";
 
@@ -26,18 +27,18 @@ export const Keyboard = ({
     setVisible(isOpen);
   }, [isOpen]);
 
-  const handlePress = (letter?: string) => {
+  const handlePress = useCallback((letter?: string) => {
     onKeyboardInput(letter);
-  };
+  }, []);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     onNext();
-  };
+  }, []);
 
   if (!visible) return null;
 
   return (
-    <View style={styles.keyboardWrapper}>
+    <SafeAreaView edges={["bottom"]} style={styles.keyboardWrapper}>
       {keyboardLayout === "lowercase" && (
         <LowercaseLayout
           setKeyboardLayout={setKeyboardLayout}
@@ -62,7 +63,7 @@ export const Keyboard = ({
           enterIsActive={enterIsActive}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
   keyboardWrapper: {
     width: "100%",
     paddingTop: 8,
-    paddingBottom: 48,
+    paddingBottom: 0,
     paddingHorizontal: 2,
   },
 });

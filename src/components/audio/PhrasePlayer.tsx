@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { Loading } from "@/app/loading/Loading";
@@ -14,36 +14,49 @@ import { throttle } from "@/utilities/throttle";
 
 // TODO: add debounce to handleSetPhraseNumber
 export const PhrasePlayer = () => {
-  const { story, version } = useStory();
-  const { sound, isLoading, error } = useAudio({ uri: version?.audio_uri });
+  const { story, version, audio } = useStory();
+  const { sound, isLoading, error } = useAudio({ uri: audio?.breaked });
   const [isPlaying, setIsPlaying] = useState(false);
+  const [playingPhrase, setPlayingPhrase] = useState(0);
 
   let playbackPositionCheckInterval: NodeJS.Timeout | null = null;
 
   // Phrase base index 1
   const [phraseNumber, setPhraseNumber] = useState(1);
-  const maxPosition = version?.phrases.length || 0;
+  const [playedPhrases, setPlayedPhrases] = useState(new Set<number>());
+  const maxPosition = version?.phrases.length ?? 0;
 
-  const [handleSetPhraseNumber] = throttle((newPosition: number) => {
-    setPhraseNumber(newPosition);
-    playPhrase();
-  }, 300);
+  const handleSetPhraseNumber = useCallback(
+    (newPosition: number) => {
+      console.log("handleSetPhraseNumber", newPosition);
+      if (newPosition < 1 || newPosition > maxPosition) return;
+      setPhraseNumber(newPosition);
+      playPhrase(newPosition);
+    },
+    [maxPosition],
+  );
 
   // play the phrase for 1 second
-  const playPhrase = async () => {
+  const playPhrase = async (newPosition: number) => {
     if (!sound || !version) return;
 
-    const timeStart = version.phrases[phraseNumber - 1].timeStart;
-    const timeEnd = version.phrases[phraseNumber - 1].timeEnd;
+    // Do not interrupt the current phrase if it's already playing
+    if (playingPhrase === newPosition) {
+      return;
+    }
 
+    // If other phrase is already playing, pause it
     if (isPlaying) {
       setIsPlaying(false);
       await sound.pauseAsync();
     }
 
+    const timeStart = version.phrases[newPosition - 1].timeStart;
+    const timeEnd = version.phrases[newPosition - 1].timeEnd;
     await sound.setPositionAsync(timeStart);
     await sound.playAsync();
     setIsPlaying(true);
+    setPlayingPhrase(newPosition);
 
     // Clear any existing interval to avoid multiple intervals running
     if (playbackPositionCheckInterval) {
@@ -57,14 +70,24 @@ export const PhrasePlayer = () => {
       if (status.isLoaded && status.positionMillis >= timeEnd) {
         await sound.pauseAsync();
         setIsPlaying(false);
+        setPlayingPhrase(0);
+        setPlayedPhrases((prev) => new Set(prev.add(newPosition)));
+
         if (playbackPositionCheckInterval) {
           clearInterval(playbackPositionCheckInterval);
           playbackPositionCheckInterval = null;
+        }
+
+        console.log("Played phrases", playedPhrases);
+
+        if (playedPhrases.size === version.phrases.length) {
+          console.log("All phrases have been played!");
         }
       }
     }, 50);
   };
 
+  // TODO: add proper loading and error states
   if (!story || !version) {
     return <Loading />;
   }
@@ -94,6 +117,7 @@ export const PhrasePlayer = () => {
         position={phraseNumber}
         handleSetPhraseNumber={handleSetPhraseNumber}
         maxPosition={maxPosition}
+        isPlaying={isPlaying}
       />
     </View>
   );

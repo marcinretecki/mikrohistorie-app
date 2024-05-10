@@ -35,5 +35,5 @@ export const typedClient: TypedSupabaseClient = createClient<Database>(
       persistSession: true,
       detectSessionInUrl: false,
     },
-  }
+  },
 );

@@ -142,7 +142,7 @@ const FragmentChecked = ({
 }: FragmentCheckedProps) => {
   const comparisonResult = compareAndGenerateComponents(
     phrase.phrase,
-    userInput
+    userInput,
   );
 
   return (

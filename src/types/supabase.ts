@@ -58,7 +58,7 @@ export type Database = {
         Insert: {
           created_at?: string
           listen?: boolean
-          progress_id?: string
+          progress_id: string
           repeat?: boolean
           updated_at?: string | null
           user_id: string
@@ -128,7 +128,6 @@ export type Database = {
         Row: {
           created_at: string
           description: string
-          image_uri: string
           level: Database["public"]["Enums"]["level"]
           public: boolean
           slug: string
@@ -140,7 +139,6 @@ export type Database = {
         Insert: {
           created_at?: string
           description: string
-          image_uri: string
           level?: Database["public"]["Enums"]["level"]
           public?: boolean
           slug: string
@@ -152,7 +150,6 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string
-          image_uri?: string
           level?: Database["public"]["Enums"]["level"]
           public?: boolean
           slug?: string
@@ -165,7 +162,6 @@ export type Database = {
       }
       versions: {
         Row: {
-          audio_uri: string
           created_at: string
           phrases: Json
           reader: string
@@ -178,7 +174,6 @@ export type Database = {
           word_count: number
         }
         Insert: {
-          audio_uri: string
           created_at?: string
           phrases: Json
           reader: string
@@ -191,7 +186,6 @@ export type Database = {
           word_count: number
         }
         Update: {
-          audio_uri?: string
           created_at?: string
           phrases?: Json
           reader?: string

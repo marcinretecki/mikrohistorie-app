@@ -1,6 +1,7 @@
 import ForwardPNG from "@assets/forward.png";
 import { Trans } from "@lingui/macro";
 import { Link } from "expo-router";
+import { ExpoRouter } from "expo-router/types/expo-router";
 import React from "react";
 import { StyleSheet, View, FlatList, Image, Pressable } from "react-native";
 
@@ -37,11 +38,15 @@ interface StoryListItemProps {
   item: Story;
   index: number;
 }
-const renderItem = ({ item, index }: StoryListItemProps) => (
-  <View style={{ marginRight: 16 }}>
-    <StoryListItem story={item} size="Narrow" />
-  </View>
-);
+const renderItem = ({ item }: StoryListItemProps) => {
+  if (item.versions.length === 0) return null;
+
+  return (
+    <View style={{ marginRight: 16 }}>
+      <StoryListItem story={item} size="Narrow" />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   root: { gap: 16, paddingLeft: 16 },
@@ -66,7 +71,7 @@ const styles = StyleSheet.create({
 
 interface MoreButtonProps {
   pathname: string;
-  params: object;
+  params: ExpoRouter.UnknownInputParams | undefined;
 }
 
 function MoreButton({ pathname, params }: MoreButtonProps) {

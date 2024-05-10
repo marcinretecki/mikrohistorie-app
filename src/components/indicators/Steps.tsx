@@ -2,21 +2,26 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 
 import { theme } from "@/styles/theme";
-import { Progress } from "@/types/types";
+import { Progress, StoryVersion } from "@/types/types";
 
 export interface StepsProps {
+  versions: StoryVersion[];
   versionsProgress: Progress[];
 }
 
-export function Steps({ versionsProgress }: StepsProps) {
+export function Steps({ versionsProgress, versions }: StepsProps) {
   const styles = stylesheet;
 
   return (
     <View style={styles.root}>
       <View style={styles.row}>
-        {versionsProgress.map((progress, index) => {
-          const step1 = progress.repeat || progress.write;
-          const step2 = progress.repeat && progress.write;
+        {versions.map((version, index) => {
+          const progress = versionsProgress.find(
+            (progress) => progress.version_id === version.version_id,
+          );
+
+          const step1 = progress?.repeat || progress?.write;
+          const step2 = progress?.repeat && progress?.write;
 
           return (
             <View

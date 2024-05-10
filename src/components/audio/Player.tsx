@@ -11,16 +11,26 @@ import { Waveform } from "./Waveform";
 
 import { PlayPauseButton } from "@/components/buttons/PlayPauseButton";
 import { SkipButton } from "@/components/buttons/SkipButton";
+import { HandleProgressProps } from "@/providers/storyProvider";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
-import { Story } from "@/types/types";
+import { Progress, Story } from "@/types/types";
 
 interface PlayerProps {
-  uri: string;
+  uri?: string;
   story: Story;
+  progress: Progress | undefined;
+  handleProgress: ({ type }: HandleProgressProps) => void;
 }
 
-export const Player = ({ uri, story }: PlayerProps) => {
+// TODO: there is design issue with background
+
+export const Player = ({
+  uri,
+  story,
+  progress,
+  handleProgress,
+}: PlayerProps) => {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +52,7 @@ export const Player = ({ uri, story }: PlayerProps) => {
       try {
         const { sound: newSound, status } = await Audio.Sound.createAsync(
           { uri },
-          { shouldPlay: false }
+          { shouldPlay: false },
         );
 
         if (status.isLoaded && status.durationMillis) {
@@ -86,6 +96,7 @@ export const Player = ({ uri, story }: PlayerProps) => {
     if (sound) {
       await sound.playAsync();
       setIsPlaying(true);
+      handleProgress({ type: "listen" });
     }
   };
 

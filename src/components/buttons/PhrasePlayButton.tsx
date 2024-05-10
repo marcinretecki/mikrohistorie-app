@@ -18,14 +18,14 @@ export const PhrasePlayButton = ({
       {isPlaying ? (
         <Image
           style={[styles.playIcon, !isActive && styles.playIconInactive].filter(
-            Boolean
+            Boolean,
           )}
           source={fragmentPlayArrowActiveIMG}
         />
       ) : (
         <Image
           style={[styles.playIcon, !isActive && styles.playIconInactive].filter(
-            Boolean
+            Boolean,
           )}
           source={fragmentPlayArrowIMG}
         />
@@ -44,7 +44,7 @@ const RotationView = () => {
         duration: 800,
         easing: Easing.linear,
         useNativeDriver: true,
-      })
+      }),
     ).start();
   }, []);
 

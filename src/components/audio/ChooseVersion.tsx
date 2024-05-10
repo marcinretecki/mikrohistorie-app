@@ -6,17 +6,16 @@ import { BoxShadow } from "@/components/shadow/BoxShadow";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
 import { Story, StoryVersion } from "@/types/types";
+import { capitalizeFirstLetter } from "@/utilities/stringUtilities";
 
 interface ChooseVersionProps {
   story: Story;
-  versions: StoryVersion[];
   handleSetVersion: (selectedVersion: StoryVersion) => void;
   activeVersion: StoryVersion;
 }
 
 export const ChooseVersion = ({
   story,
-  versions,
   handleSetVersion,
   activeVersion,
 }: ChooseVersionProps) => {
@@ -31,7 +30,7 @@ export const ChooseVersion = ({
           overflow: "visible",
         }}
       >
-        {versions.map((version: StoryVersion) => {
+        {story.versions.map((version: StoryVersion) => {
           const isActive =
             version.version_dialect === activeVersion.version_dialect;
           return (
@@ -65,7 +64,7 @@ const StoryVersionItem = ({
         styles.versionItemRoot,
         isActive && styles.versionItemRootActive,
       ]),
-    [isActive]
+    [isActive],
   );
 
   return (
@@ -73,7 +72,7 @@ const StoryVersionItem = ({
       <Pressable onPress={() => handleSetVersion(version)}>
         <View style={versionItemRoot}>
           <Text type="BSInlineText24Bold" style={styles.versionItemText}>
-            {version.version_dialect}
+            {capitalizeFirstLetter(version.version_dialect)}
           </Text>
           <Text type="Lora12Reg" style={styles.versionItemText}>
             {version.reader}
@@ -97,6 +96,8 @@ const styles = StyleSheet.create({
     height: 76,
     flexDirection: "column",
     alignItems: "flex-start",
+    justifyContent: "center",
+    gap: 0,
     backgroundColor: theme.colors.bg2,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "transparent",
@@ -108,6 +109,6 @@ const styles = StyleSheet.create({
   },
   versionItemText: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: 4,
   },
 });

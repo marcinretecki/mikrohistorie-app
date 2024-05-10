@@ -8,7 +8,6 @@ import {
 } from "react";
 
 import { typedClient } from "@/lib/supabase";
-import { Text } from "@/styles/typography";
 
 const SessionContext = createContext<Session | null>(null);
 
@@ -25,7 +24,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
     const { data: listener } = typedClient.auth.onAuthStateChange(
       (_event, newSession) => {
         setSession(newSession);
-      }
+      },
     );
 
     return () => {

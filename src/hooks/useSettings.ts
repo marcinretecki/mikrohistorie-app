@@ -31,11 +31,6 @@ export const useSettings = () => {
     enabled: !!user.id,
   });
 
-  // not working as intended
-  useEffect(() => {
-    queryClient.setQueryData(settingsKey, settings);
-  }, [settings]);
-
   const updateSettings = useMutation({
     mutationFn: settingsRepository.updateSettings,
     scope: {
@@ -86,6 +81,7 @@ export const useSettings = () => {
   useEffect(() => {
     // check if the user has settings
     if (!isPending && !isFetching && !settings && deviceLanguage) {
+      console.log("initiate settings");
       insertSettings.mutate({
         settings: { language: deviceLanguage },
       });

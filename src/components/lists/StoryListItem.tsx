@@ -4,7 +4,8 @@ import { View, Image, StyleSheet, Pressable } from "react-native";
 
 import { Indicators } from "@/components/indicators/Indicators";
 import { Text } from "@/styles/typography";
-import { Indicator, Story } from "@/types/types";
+import { Story } from "@/types/types";
+import { getStoryImageUri } from "@/utilities/getStoryImageUri";
 
 export interface StoryListItemProps {
   story: Story;
@@ -14,9 +15,9 @@ export interface StoryListItemProps {
 export function StoryListItem({ story, size }: StoryListItemProps) {
   const styles = stylesheet;
   const isWide = size === "Wide";
+  const imageUri = getStoryImageUri(story.slug, "small");
 
-  // TODO - get indicators state from storage
-  const indicators = getIndicators(story);
+  const indicators = story.versions[0];
 
   return (
     <Link
@@ -29,7 +30,7 @@ export function StoryListItem({ story, size }: StoryListItemProps) {
         <View style={isWide ? styles.wide : styles.narrow}>
           <Image
             source={{
-              uri: story.image_uri,
+              uri: imageUri,
             }}
             style={
               isWide ? { width: 104, height: 104 } : { width: 128, height: 128 }
@@ -42,8 +43,9 @@ export function StoryListItem({ story, size }: StoryListItemProps) {
             </Text>
             <Indicators
               time={indicators.time}
-              wordCount={indicators.wordCount}
-              step={indicators.step}
+              wordCount={indicators.word_count}
+              progresses={story.progresses}
+              versions={story.versions}
             />
             {isWide && <Text type="Lora14Reg">{story.description}</Text>}
           </View>
@@ -70,22 +72,10 @@ const stylesheet = StyleSheet.create({
     columnGap: 8,
   },
 
-  mirakelhusetSizeNarrow: {
-    fontSize: 16,
-  },
-
   info: {
     flexDirection: "column",
     alignItems: "flex-start",
-    rowGap: 8,
-    columnGap: 8,
-    flexGrow: 1,
-    flexShrink: 0,
-    flexBasis: 0,
+    gap: 8,
     alignSelf: "stretch",
   },
 });
-
-const getIndicators = (story: Story) => {
-  return { time: 66, wordCount: 154, step: 1 } as Indicator;
-};

@@ -6,12 +6,16 @@ import { ScrollView, View, StyleSheet, Pressable } from "react-native";
 import { FrontFooter } from "@/components/footer/FrontFooter";
 import { Header } from "@/components/header/Header";
 import { StoryHorizontalList } from "@/components/lists/StoryHorizontalList";
-import { useStories } from "@/hooks/useFetchStories";
+import { useStories } from "@/hooks/useStories";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
 
 export default function Page() {
-  const { stories, loading, error } = useStories();
+  const { stories, isLoading, isError, error, progress } = useStories();
+
+  if (!stories) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <View style={styles.root}>

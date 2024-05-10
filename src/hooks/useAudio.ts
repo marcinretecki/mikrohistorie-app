@@ -21,7 +21,7 @@ export const useAudio = ({ uri }: useAudioProps) => {
       try {
         const { sound: newSound, status } = await Audio.Sound.createAsync(
           { uri },
-          { shouldPlay: false }
+          { shouldPlay: false },
         );
 
         if (status.isLoaded) {

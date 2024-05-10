@@ -1,49 +1,61 @@
 import { typedClient } from "@/lib/supabase";
-import { Stories, StoryVersion } from "@/types/types";
+import {
+  StoryFromDB,
+  StoryVersion,
+  Progress,
+  ProgressInsert,
+  ProgressInsertClean,
+} from "@/types/types";
+
+interface GetAudioURLProps {
+  storySlug: string;
+  versionSlug: string;
+}
 
 export const storiesRepository = {
-  getStories: async () => {
-    try {
-      const { data, error, status } = await typedClient
-        .from("stories")
-        .select()
-        .returns<Stories>();
+  getStories: async () =>
+    typedClient
+      .from("stories")
+      .select(
+        `
+      *,
+      versions:versions(*)
+      `,
+      )
+      .returns<StoryFromDB[]>(),
 
-      if (error || status !== 200) {
-        throw new Error("Network response was not ok");
-      } else if (!data) {
-        throw new Error("No data returned");
-      } else {
-        const stories = data;
-        return { stories, isError: false };
-      }
-    } catch (error) {
-      console.error("Validation or Fetching Error:", error);
-      return { isError: true, error };
-    }
+  getProgress: async () =>
+    typedClient.from("progress").select().returns<Progress[]>(),
+
+  upsertProgress: async (progress: ProgressInsertClean) => {
+    const updates: ProgressInsert = {
+      ...progress,
+      progress_id: progress.user_id + "-" + progress.version_id,
+      updated_at: new Date().toISOString(),
+    };
+
+    return typedClient
+      .from("progress")
+      .upsert(updates)
+      .throwOnError()
+      .select()
+      .returns<Progress[]>();
   },
-  getVersions: async (storyId: string) => {
-    try {
-      const { data, error, status } = await typedClient
-        .from("versions")
-        .select()
-        .eq("story_id", storyId)
-        .returns<StoryVersion[]>();
 
-      console.log("versions", data);
-      console.log("error", error);
+  getVersions: async (storyId: string) =>
+    typedClient
+      .from("versions")
+      .select()
+      .eq("story_id", storyId)
+      .returns<StoryVersion[]>(),
 
-      if (error || status !== 200) {
-        throw new Error("Network response was not ok");
-      } else if (!data) {
-        throw new Error("No data returned");
-      } else {
-        const versions = data;
-        return { versions, isError: false };
-      }
-    } catch (error) {
-      console.error("Validation or Fetching Error:", error);
-      return { isError: true, error };
-    }
+  getAudioURL: async ({ storySlug, versionSlug }: GetAudioURLProps) => {
+    const full = `${storySlug}/${versionSlug}/${storySlug}.m4a`;
+    const breaked = `${storySlug}/${versionSlug}/${storySlug}_breaked.m4a`;
+    console.log("full", full, "breaked", breaked);
+
+    return typedClient.storage
+      .from("stories")
+      .createSignedUrls([full, breaked], 60 * 60);
   },
 };

@@ -20,39 +20,44 @@ interface UserInputValues {
 
 export const PhraseWriter = () => {
   const scrollViewRef = useRef<ScrollView | null>(null);
-  const { story, version } = useStory();
-  const { sound, isLoading, error } = useAudio({ uri: version?.audio_uri });
+  const { story, version, audio, handleProgress, versionProgress } = useStory();
+  const { sound, isLoading, error } = useAudio({ uri: audio?.breaked });
   const [isPlaying, setIsPlaying] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [playingPhrase, setPlayingPhrase] = useState(0);
   const [userInputValues, setUserInputValues] = useState<UserInputValues>({});
+  const [playbackPositionCheckInterval, setPlaybackPositionCheckInterval] =
+    useState<NodeJS.Timeout | null>(null);
 
   // Phrase base index 1
   const [phraseNumber, setPhraseNumber] = useState(1);
 
-  const maxPosition = version?.phrases.length || 0;
-  let playbackPositionCheckInterval: NodeJS.Timeout | null = null;
+  const maxPosition = version?.phrases.length ?? 0;
 
-  const handleSetPhraseNumber = (newPosition: number) => {
-    if (newPosition < 1 || newPosition > maxPosition) return;
-    setPhraseNumber(newPosition);
-    playPhrase(newPosition);
-  };
+  const handleSetPhraseNumber = useCallback(
+    (newPosition: number) => {
+      if (newPosition < 1 || newPosition > maxPosition) return;
+      setPhraseNumber(newPosition);
+      playPhrase(newPosition);
+    },
+    [maxPosition],
+  );
 
-  const handleCheck = () => {
+  const handleCheck = useCallback(() => {
     console.log("handleCheck");
     setPhraseNumber(1);
     setIsChecked(true);
+    handleProgress({ type: "write" });
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
     }
-  };
+  }, [handleProgress]);
 
   const handleUserInput = useCallback((index: number, text: string) => {
     setUserInputValues((prev) => ({ ...prev, [index]: text }));
   }, []);
 
-  const handleKeyboardInput = (letter?: string) => {
+  const handleKeyboardInput = useCallback((letter?: string) => {
     setUserInputValues((prev) => {
       const currentText = prev[phraseNumber] || "";
 
@@ -68,7 +73,7 @@ export const PhraseWriter = () => {
         [phraseNumber]: newText,
       };
     });
-  };
+  }, []);
 
   // play the phrase for 1 second
   const playPhrase = async (newPosition: number) => {
@@ -97,25 +102,38 @@ export const PhraseWriter = () => {
     // Clear any existing interval to avoid multiple intervals running
     if (playbackPositionCheckInterval) {
       clearInterval(playbackPositionCheckInterval);
-      playbackPositionCheckInterval = null;
+      setPlaybackPositionCheckInterval(null);
     }
 
-    playbackPositionCheckInterval = setInterval(async () => {
-      const status = await sound.getStatusAsync();
-
-      if (status.isLoaded && status.positionMillis >= timeEnd) {
-        await sound.pauseAsync();
-        setIsPlaying(false);
-        setPlayingPhrase(0);
-
-        if (playbackPositionCheckInterval) {
-          clearInterval(playbackPositionCheckInterval);
-          playbackPositionCheckInterval = null;
+    setPlaybackPositionCheckInterval(
+      setInterval(async () => {
+        const status = await sound.getStatusAsync();
+        if (status.isLoaded && status.positionMillis >= timeEnd) {
+          await sound.pauseAsync();
+          setIsPlaying(false);
+          setPlayingPhrase(0);
+          setPlaybackPositionCheckInterval(null);
         }
-      }
-    }, 50);
+      }, 50),
+    );
+
+    // playbackPositionCheckInterval = setInterval(async () => {
+    //   const status = await sound.getStatusAsync();
+
+    //   if (status.isLoaded && status.positionMillis >= timeEnd) {
+    //     await sound.pauseAsync();
+    //     setIsPlaying(false);
+    //     setPlayingPhrase(0);
+
+    //     if (playbackPositionCheckInterval) {
+    //       clearInterval(playbackPositionCheckInterval);
+    //       playbackPositionCheckInterval = null;
+    //     }
+    //   }
+    // }, 50);
   };
 
+  // TODO: add proper loading and error states
   if (!version || !story) {
     return <Loading />;
   }
@@ -162,6 +180,7 @@ export const PhraseWriter = () => {
         maxPosition={maxPosition}
         size={isChecked ? "big" : "small"}
         keyboardIsOpen={!isChecked}
+        isPlaying={isPlaying}
       />
     </View>
   );

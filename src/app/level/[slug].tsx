@@ -4,7 +4,7 @@ import { FlatList, View } from "react-native";
 
 import { Header } from "@/components/header/Header";
 import { StoryListItem } from "@/components/lists/StoryListItem";
-import { useStories } from "@/hooks/useFetchStories";
+import { useStories } from "@/hooks/useStories";
 
 export default function Page() {
   const { slug } = useLocalSearchParams();
@@ -12,8 +12,8 @@ export default function Page() {
   const cleanSlug = slug instanceof Array ? slug[0] : slug ? slug : "";
 
   // search for all stories with the same level as the slug
-  const stories = storiesContext.stories.filter(
-    (story) => story.level === cleanSlug
+  const stories = storiesContext.stories?.filter(
+    (story) => story.level === cleanSlug,
   );
 
   const title = (level: string) => {

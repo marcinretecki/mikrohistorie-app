@@ -30,7 +30,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       // ✅ globally default to 60 seconds
-      staleTime: 1000 * 60,
+      staleTime: (1000 * 60) / 60,
     },
   },
 });

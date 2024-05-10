@@ -4,29 +4,30 @@ import { View, StyleSheet, Image, ScrollView } from "react-native";
 import { Loading } from "@/app/loading/Loading";
 import { ChooseVersion } from "@/components/audio/ChooseVersion";
 import { Player } from "@/components/audio/Player";
+import { ButtonPrimary } from "@/components/buttons/ButtonPrimary";
 import { Footer } from "@/components/footer/Footer";
 import { BackButton } from "@/components/header/BackButton";
 import { Indicators } from "@/components/indicators/Indicators";
 import { StoryModes } from "@/components/lists/StoryModes";
 import { useStory } from "@/hooks/useStory";
+import { useUser } from "@/hooks/useUser";
 import { theme } from "@/styles/theme";
-import { StoryVersion } from "@/types/types";
+import { Progress, ProgressInsert, StoryVersion } from "@/types/types";
 
 export default function Page() {
-  const { story, versions } = useStory();
+  const {
+    story,
+    audio,
+    version,
+    versionProgress,
+    handleSetVersion,
+    storyImageUri,
+    handleProgress,
+  } = useStory();
 
-  const [version, setVersion] = useState<StoryVersion | null>(null);
+  console.log("version in story index", version?.version_dialect);
 
-  useEffect(() => {
-    if (versions) {
-      setVersion(versions[0]);
-    }
-  }, [versions]);
-
-  const handleSetVersion = (selectedVersion: StoryVersion) => {
-    setVersion(selectedVersion);
-  };
-
+  // TODO: Add story loading screen instead of generic loading
   if (!story || !version) {
     return <Loading />;
   }
@@ -41,22 +42,31 @@ export default function Page() {
             <Image
               style={styles.backgroundImage}
               source={{
-                uri: story.image_uri,
+                uri: storyImageUri,
               }}
             />
             <View style={styles.audioPlayer}>
-              <Player uri={version.audio_uri} story={story} />
+              <Player
+                uri={audio?.full}
+                story={story}
+                progress={versionProgress}
+                handleProgress={handleProgress}
+              />
               <View style={styles.backWrapper}>
                 <BackButton />
               </View>
             </View>
           </View>
 
-          <Indicators time={0} wordCount={0} step={0} />
+          <Indicators
+            time={version.time}
+            wordCount={version.word_count}
+            progresses={story.progresses}
+            versions={story.versions}
+          />
         </View>
         <ChooseVersion
           story={story}
-          versions={versions}
           activeVersion={version}
           handleSetVersion={handleSetVersion}
         />

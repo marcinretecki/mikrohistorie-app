@@ -96,7 +96,7 @@ export const ModifierKey = ({
 const Backspace = ({ onPress }: { onPress: (text: string) => void }) => {
   const [isPressed, setIsPressed] = React.useState(false);
   const [intervalId, setIntervalId] = React.useState<NodeJS.Timeout | null>(
-    null
+    null,
   );
 
   const handlePress = () => {
