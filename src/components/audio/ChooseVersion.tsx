@@ -10,7 +10,7 @@ import { capitalizeFirstLetter } from "@/utilities/stringUtilities";
 
 interface ChooseVersionProps {
   story: Story;
-  handleSetVersion: (selectedVersion: StoryVersion) => void;
+  handleSetVersion: (selectedVersionId: string) => void;
   activeVersion: StoryVersion;
 }
 
@@ -51,7 +51,7 @@ export const ChooseVersion = ({
 interface StoryVersionItemProps {
   version: StoryVersion;
   isActive: boolean;
-  handleSetVersion: (selectedVersion: StoryVersion) => void;
+  handleSetVersion: (selectedVersionId: string) => void;
 }
 const StoryVersionItem = ({
   version,
@@ -69,7 +69,7 @@ const StoryVersionItem = ({
 
   return (
     <BoxShadow shadow={isActive ? "viewShadowTealMedium" : "viewShadowTeal"}>
-      <Pressable onPress={() => handleSetVersion(version)}>
+      <Pressable onPress={() => handleSetVersion(version.version_id)}>
         <View style={versionItemRoot}>
           <Text type="BSInlineText24Bold" style={styles.versionItemText}>
             {capitalizeFirstLetter(version.version_dialect)}

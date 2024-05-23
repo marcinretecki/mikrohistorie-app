@@ -33,3 +33,16 @@ export const successToast = (message: string) =>
       indicator: toastStyles.indicatorSuccess,
     },
   });
+
+export const loadingToast = (message: string, id?: string) =>
+  toast.error(message, {
+    position: ToastPosition.TOP,
+    styles: {
+      view: toastStyles.view,
+      pressable: toastStyles.pressable,
+      text: toastStyles.text,
+      indicator: toastStyles.indicatorError,
+    },
+    id,
+    duration: Infinity,
+  });

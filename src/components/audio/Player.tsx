@@ -11,7 +11,7 @@ import { Waveform } from "./Waveform";
 
 import { PlayPauseButton } from "@/components/buttons/PlayPauseButton";
 import { SkipButton } from "@/components/buttons/SkipButton";
-import { HandleProgressProps } from "@/providers/storyProvider";
+import { HandleProgressProps } from "@/providers/StoryProvider";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
 import { Progress, Story } from "@/types/types";

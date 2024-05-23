@@ -1,6 +1,6 @@
 import { Slot, useLocalSearchParams } from "expo-router";
 
-import { StoryProvider } from "@/providers/storyProvider";
+import { StoryProvider } from "@/providers/StoryProvider";
 
 export default function StoryLayout() {
   const { slug } = useLocalSearchParams();

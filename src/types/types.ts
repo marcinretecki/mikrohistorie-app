@@ -34,8 +34,9 @@ export type VersionAudio = {
 };
 
 export type Translations = {
+  [key: string]: string;
   pl: string;
-  en?: string;
+  en: string;
 };
 
 export type StoryPhrase = {

@@ -25,12 +25,13 @@ export interface HandleProgressProps {
 
 interface StoryContextType {
   story: Story | undefined;
+  versionId: string | undefined;
   version: StoryVersion | undefined;
   versionProgress: Progress | undefined;
   storyImageUri: string;
   audio: VersionAudio | undefined;
   handleProgress: ({ type }: HandleProgressProps) => void;
-  handleSetVersion: (selectedVersion: StoryVersion) => void;
+  handleSetVersion: (selectedVersionId: string) => void;
 }
 
 export const StoryContext = createContext<StoryContextType | undefined>(
@@ -44,38 +45,46 @@ interface StoryProviderProps {
 export const StoryProvider = ({ children, slug }: StoryProviderProps) => {
   const user = useUser();
   const { stories, progress } = useStories();
-  const [version, setVersion] = useState<StoryVersion | undefined>(undefined);
+  const [versionId, setVersionId] = useState<string | undefined>(undefined);
 
   const story = useMemo(
     () => stories?.find((story) => story.slug === slug),
     [slug, stories],
   );
 
-  const versionProgress = useMemo(() => {
-    if (story && version) {
-      return story.progresses.find(
-        (progress) => progress.version_id === version.version_id,
+  const version = useMemo(() => {
+    if (story && versionId) {
+      return story?.versions.find(
+        (version) => version.version_id === versionId,
       );
     }
-  }, [story, version]);
+  }, [story, versionId]);
+
+  const versionProgress = useMemo(() => {
+    if (story && versionId) {
+      return story.progresses.find(
+        (progress) => progress.version_id === versionId,
+      );
+    }
+  }, [story, versionId]);
 
   const storyImageUri = useMemo(() => getStoryImageUri(slug, "large"), [slug]);
 
   useEffect(() => {
     if (story?.versions) {
-      setVersion(story.versions[0]);
+      setVersionId(story.versions[0].version_id);
     }
   }, []);
 
-  const handleSetVersion = (selectedVersion: StoryVersion) => {
-    setVersion(selectedVersion);
+  const handleSetVersion = (selectedVersionId: string) => {
+    setVersionId(selectedVersionId);
   };
 
   const handleProgress = ({ type }: HandleProgressProps) => {
-    if (story && version && progress && user) {
+    if (story && versionId && progress && user) {
       const progressBase: ProgressInsert = {
-        progress_id: user.id + "_" + version.version_id,
-        version_id: version.version_id,
+        progress_id: user.id + "_" + versionId,
+        version_id: versionId,
         user_id: user.id,
       };
 
@@ -104,9 +113,9 @@ export const StoryProvider = ({ children, slug }: StoryProviderProps) => {
   };
 
   const { data: audioData, error: audioError } = useQuery({
-    queryKey: ["audiottt", version],
+    queryKey: ["audiottt", versionId],
     queryFn: async () => {
-      if (!version) {
+      if (!versionId) {
         return;
       }
       const { data } = await storiesRepository.getAudioURL({
@@ -122,7 +131,7 @@ export const StoryProvider = ({ children, slug }: StoryProviderProps) => {
       };
       return versionAudio;
     },
-    enabled: !!version,
+    enabled: !!versionId,
     staleTime: 0,
     refetchOnMount: "always",
   });
@@ -135,6 +144,7 @@ export const StoryProvider = ({ children, slug }: StoryProviderProps) => {
     <StoryContext.Provider
       value={{
         story,
+        versionId,
         version,
         audio: audioData,
         storyImageUri,

@@ -4,16 +4,10 @@ import playArrowIMG from "@assets/play_arrow.png";
 import playArrowActiveIMG from "@assets/play_arrow_active.png";
 import skipNextIMG from "@assets/skip_next.png";
 import skipPreviousIMG from "@assets/skip_previous.png";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Image,
-  LayoutAnimation,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import React, { useCallback, useMemo } from "react";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 
-import { Language } from "../indicators/Language";
+import { BottomPlayerTranslation } from "./BottomPlayerTranslation";
 import { Keyboard } from "../keyboard/Keyboard";
 
 import { useStory } from "@/hooks/useStory";
@@ -39,6 +33,7 @@ export const BottomPlayer = ({
   handleSetPhraseNumber,
   handleKeyboardInput,
 }: BottomPlayerProps) => {
+  const { story } = useStory();
   const [translationIsOpen, setTranslationIsOpen] = React.useState(false);
   const isLast = useMemo(
     () => position === maxPosition,
@@ -56,6 +51,13 @@ export const BottomPlayer = ({
   const currentPositionHandler = useCallback(() => {
     handleSetPhraseNumber(position);
   }, [position]);
+
+  const hasTranslations =
+    story?.translations &&
+    Object.keys(story.translations).length > 0 &&
+    size === "big";
+
+  console.log("hasTranslations", story?.translations);
 
   return (
     <View style={styles.root}>
@@ -87,7 +89,7 @@ export const BottomPlayer = ({
         >
           <Image style={styles.playImage} source={skipNextIMG} />
         </BottomPlayerButton>
-        {size === "big" ? (
+        {hasTranslations ? (
           <BottomPlayerButton
             onPress={() => setTranslationIsOpen(!translationIsOpen)}
           >
@@ -105,7 +107,9 @@ export const BottomPlayer = ({
           enterIsActive={!isLast}
         />
       )}
-      <BottomPlayerTranslation isOpen={translationIsOpen} />
+      {hasTranslations && (
+        <BottomPlayerTranslation isOpen={translationIsOpen} />
+      )}
     </View>
   );
 };
@@ -159,33 +163,7 @@ export const BottomPlayerButton = ({
   );
 };
 
-// TODO: Add translations
-interface BottomPlayerTranslationProps {
-  isOpen: boolean;
-}
-export const BottomPlayerTranslation = ({
-  isOpen,
-}: BottomPlayerTranslationProps) => {
-  const { story } = useStory();
-  const [visible, setVisible] = useState(isOpen);
-
-  useEffect(() => {
-    // Animate layout changes when isOpen changes
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setVisible(isOpen);
-  }, [isOpen]);
-
-  if (!visible) return null;
-
-  return (
-    <View style={styles.translation}>
-      <Language />
-      <Text type="Lora14Reg">{story?.translations.pl}</Text>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   root: {
     flexDirection: "column",
     alignItems: "flex-start",
@@ -210,14 +188,6 @@ const styles = StyleSheet.create({
   },
   playerWifKeyboard: {
     height: 64,
-  },
-  translation: {
-    paddingTop: 0,
-    paddingHorizontal: 16,
-    paddingBottom: 24,
-    gap: 16,
-    flexDirection: "column",
-    alignItems: "flex-start",
   },
   buttonWrapper: {
     width: 56,
@@ -305,6 +275,3 @@ const styles = StyleSheet.create({
     height: 36,
   },
 });
-function setVisible(isOpen: boolean) {
-  throw new Error("Function not implemented.");
-}

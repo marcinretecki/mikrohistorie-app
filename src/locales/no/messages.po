@@ -13,22 +13,46 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/audio/PhraseWriter.tsx:145
+#: src/components/picker/Picker.tsx:38
+msgid "App language"
+msgstr ""
+
+#: src/components/auth/Auth.tsx:141
+msgid "Change email address"
+msgstr ""
+
+#: src/components/audio/PhraseWriter.tsx:170
 msgid "Check"
 msgstr "Sjekk"
+
+#: src/components/auth/Auth.tsx:118
+msgid "Check your inbox"
+msgstr "Sjekk innboksen din"
 
 #: src/app/_layout.tsx:78
 #~ msgid "Loading"
 #~ msgstr "Laster"
 
-#: src/components/lists/StoryHorizontalList.tsx:80
+#: src/components/lists/StoryHorizontalList.tsx:89
 msgid "More"
 msgstr "Flere"
 
-#: src/components/auth/Auth.tsx:99
+#: src/components/auth/Auth.tsx:104
 msgid "Next"
 msgstr "Neste"
 
-#: src/app/index.tsx:38
+#: src/providers/NetworkProvider.tsx:44
+msgid "No internet connection"
+msgstr "Ingen internettforbindelse"
+
+#: src/components/footer/FrontFooter.tsx:31
 msgid "Settings"
 msgstr "Innstillinger"
+
+#: src/components/auth/Auth.tsx:121
+msgid "We sent you a verification code."
+msgstr "Vi har sendt deg en bekreftelseskode."
+
+#: src/app/settings/index.tsx:45
+msgid "Your account email"
+msgstr "Kontoens e-postadresse"

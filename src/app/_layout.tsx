@@ -13,8 +13,9 @@ import { Platform, UIManager } from "react-native";
 
 import { DefaultLayout } from "@/components/layouts/Default";
 import { LoadingLayout } from "@/components/layouts/Loading";
-import { SessionProvider } from "@/hooks/useSession";
 import { messages } from "@/locales/en/messages";
+import { NetworkProvider } from "@/providers/NetworkProvider";
+import { SessionProvider } from "@/providers/SessionProvider";
 
 if (
   Platform.OS === "android" &&
@@ -61,7 +62,9 @@ export default function RootLayout() {
         <I18nProvider i18n={i18n}>
           <QueryClientProvider client={queryClient}>
             <SessionProvider>
-              <DefaultLayout />
+              <NetworkProvider>
+                <DefaultLayout />
+              </NetworkProvider>
             </SessionProvider>
           </QueryClientProvider>
         </I18nProvider>

@@ -22,6 +22,7 @@ export const storiesRepository = {
       versions:versions(*)
       `,
       )
+      .order("created_at", { ascending: false })
       .returns<StoryFromDB[]>(),
 
   getProgress: async () =>

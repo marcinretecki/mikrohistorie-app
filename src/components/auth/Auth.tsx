@@ -9,6 +9,8 @@ import { ButtonPrimary } from "../buttons/ButtonPrimary";
 import { Header } from "../header/Header";
 import { EmailInput } from "../inputs/EmailInput";
 
+import { useNetwork } from "@/hooks/useNetwork";
+import { useSession } from "@/hooks/useSession";
 import { typedClient } from "@/lib/supabase";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
@@ -21,6 +23,8 @@ export const Auth = () => {
   const [step, setStep] = useState(1);
   const tokenInputRef = useRef<TextInput | null>(null);
   const [error, setError] = useState<AuthError>();
+  const { networkState } = useNetwork();
+  const session = useSession();
 
   useEffect(() => {
     if (token.length === 6) {
@@ -94,7 +98,11 @@ export const Auth = () => {
           />
 
           <View style={styles.buttonWrapper}>
-            <ButtonPrimary onPress={sendOTP} loading={loading}>
+            <ButtonPrimary
+              onPress={sendOTP}
+              loading={loading}
+              disabled={networkState?.isInternetReachable === false}
+            >
               <Trans>Next</Trans>
             </ButtonPrimary>
           </View>
@@ -108,8 +116,12 @@ export const Auth = () => {
       <Header title="Mikrohistorie" />
       <View style={styles.contentWrapper}>
         <View style={styles.titleWrapper}>
-          <Text type="BSText24Bold">Check your inbox</Text>
-          <Text type="Lora12Reg">We sent you a verification code.</Text>
+          <Text type="BSText24Bold">
+            <Trans>Check your inbox</Trans>
+          </Text>
+          <Text type="Lora12Reg">
+            <Trans>We sent you a verification code.</Trans>
+          </Text>
         </View>
 
         <TextInput
@@ -128,7 +140,7 @@ export const Auth = () => {
           <Pressable onPress={stepBack} style={styles.backButton}>
             <Image source={arrowBackIMG} />
             <Text type="Lora12Reg" color={theme.colors.text80}>
-              Change email address
+              <Trans>Change email address</Trans>
             </Text>
           </Pressable>
         </View>

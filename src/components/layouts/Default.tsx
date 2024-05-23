@@ -7,13 +7,15 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Kitchensink } from "../kitchensink/Kitchensink";
 
 import { Auth } from "@/components/auth/Auth";
+import { useNetwork } from "@/hooks/useNetwork";
 import { useSession } from "@/hooks/useSession";
-import { StoriesProvider } from "@/providers/storiesProvider";
-import { UserProvider } from "@/providers/userProvider";
+import { StoriesProvider } from "@/providers/StoriesProvider";
+import { UserProvider } from "@/providers/UserProvider";
 import { theme } from "@/styles/theme";
 
 export const DefaultLayout = () => {
   const session = useSession();
+  const network = useNetwork();
 
   // return (
   //   <SafeAreaProvider>
@@ -25,7 +27,10 @@ export const DefaultLayout = () => {
     return (
       <ThemeProvider value={DarkTheme}>
         <SafeAreaProvider>
-          <Auth />
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <Auth />
+            <Toasts overrideDarkMode={false} />
+          </GestureHandlerRootView>
         </SafeAreaProvider>
       </ThemeProvider>
     );
