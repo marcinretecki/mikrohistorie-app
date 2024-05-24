@@ -10,11 +10,9 @@ import { Header } from "../header/Header";
 import { EmailInput } from "../inputs/EmailInput";
 
 import { useNetwork } from "@/hooks/useNetwork";
-import { useSession } from "@/hooks/useSession";
 import { typedClient } from "@/lib/supabase";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
-import { errorToast } from "@/toasts/toasts";
 
 export const Auth = () => {
   const [loading, setLoading] = useState(false);
@@ -24,7 +22,6 @@ export const Auth = () => {
   const tokenInputRef = useRef<TextInput | null>(null);
   const [error, setError] = useState<AuthError>();
   const { networkState } = useNetwork();
-  const session = useSession();
 
   useEffect(() => {
     if (token.length === 6) {

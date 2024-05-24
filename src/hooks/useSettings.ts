@@ -10,7 +10,7 @@ import { errorToast, successToast } from "@/toasts/toasts";
 import { Settings } from "@/types/types";
 
 export const useSettings = () => {
-  const deviceLanguage = useLocale();
+  const { deviceLanguage } = useLocale();
   const queryClient = useQueryClient();
   const user = useUser();
   const settingsKey = ["settings", user.id];

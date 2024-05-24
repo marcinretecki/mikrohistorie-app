@@ -36,7 +36,7 @@ export const PhrasePlayer = () => {
     [maxPosition],
   );
 
-  // play the phrase for 1 second
+  // play the phrase
   const playPhrase = async (newPosition: number) => {
     if (!sound || !version) return;
 
@@ -125,7 +125,7 @@ export const PhrasePlayer = () => {
 
 const styles = StyleSheet.create({
   scrollView: {
-    backgroundColor: theme.colors.bg,
+    backgroundColor: theme.colors.bg3,
     flex: 1,
   },
   backWrapper: {

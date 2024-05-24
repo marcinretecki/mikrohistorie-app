@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import { View, StyleSheet, Pressable, TextInput } from "react-native";
 
+import { Divider } from "./Divider";
+
 import { PhrasePlayButton } from "@/components/buttons/PhrasePlayButton";
 import { BoxShadow } from "@/components/shadow/BoxShadow";
 import { theme } from "@/styles/theme";
@@ -159,7 +161,7 @@ const FragmentChecked = ({
             >
               {comparisonResult}
             </Text>
-            <View style={styles.divider} />
+            <Divider />
             <Text
               type="Lora14Reg"
               color={theme.colors.text}
@@ -233,11 +235,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 2,
     height: 68,
-  },
-  divider: {
-    // height: StyleSheet.hairlineWidth,
-    height: 1,
-    backgroundColor: theme.colors.bg3,
   },
   textTest: {
     textAlignVertical: "center",

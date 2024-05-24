@@ -116,21 +116,6 @@ export const PhraseWriter = () => {
         }
       }, 50),
     );
-
-    // playbackPositionCheckInterval = setInterval(async () => {
-    //   const status = await sound.getStatusAsync();
-
-    //   if (status.isLoaded && status.positionMillis >= timeEnd) {
-    //     await sound.pauseAsync();
-    //     setIsPlaying(false);
-    //     setPlayingPhrase(0);
-
-    //     if (playbackPositionCheckInterval) {
-    //       clearInterval(playbackPositionCheckInterval);
-    //       playbackPositionCheckInterval = null;
-    //     }
-    //   }
-    // }, 50);
   };
 
   // TODO: add proper loading and error states

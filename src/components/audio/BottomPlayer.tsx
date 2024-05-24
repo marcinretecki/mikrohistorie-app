@@ -4,12 +4,19 @@ import playArrowIMG from "@assets/play_arrow.png";
 import playArrowActiveIMG from "@assets/play_arrow_active.png";
 import skipNextIMG from "@assets/skip_next.png";
 import skipPreviousIMG from "@assets/skip_previous.png";
-import React, { useCallback, useMemo } from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import React, { useCallback, useEffect, useMemo } from "react";
+import {
+  Image,
+  LayoutAnimation,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 
 import { BottomPlayerTranslation } from "./BottomPlayerTranslation";
 import { Keyboard } from "../keyboard/Keyboard";
 
+import { useLocale } from "@/hooks/useLocale";
 import { useStory } from "@/hooks/useStory";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
@@ -35,6 +42,7 @@ export const BottomPlayer = ({
 }: BottomPlayerProps) => {
   const { story } = useStory();
   const [translationIsOpen, setTranslationIsOpen] = React.useState(false);
+
   const isLast = useMemo(
     () => position === maxPosition,
     [position, maxPosition],
@@ -52,6 +60,12 @@ export const BottomPlayer = ({
     handleSetPhraseNumber(position);
   }, [position]);
 
+  const handleTranslationOpening = useCallback(() => {
+    // Animate layout changes when translationIsOpen changes
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setTranslationIsOpen(!translationIsOpen);
+  }, [translationIsOpen]);
+
   const hasTranslations =
     story?.translations &&
     Object.keys(story.translations).length > 0 &&
@@ -65,6 +79,7 @@ export const BottomPlayer = ({
         style={[
           styles.player,
           size === "small" && styles.playerSmall,
+          translationIsOpen ? styles.playerSmall : null,
           keyboardIsOpen && styles.playerWifKeyboard,
         ].filter(Boolean)}
       >
@@ -90,10 +105,8 @@ export const BottomPlayer = ({
           <Image style={styles.playImage} source={skipNextIMG} />
         </BottomPlayerButton>
         {hasTranslations ? (
-          <BottomPlayerButton
-            onPress={() => setTranslationIsOpen(!translationIsOpen)}
-          >
-            <LanguageButtonContent language="PL" active={translationIsOpen} />
+          <BottomPlayerButton onPress={handleTranslationOpening}>
+            <LanguageButtonContent active={translationIsOpen} />
           </BottomPlayerButton>
         ) : (
           <View style={styles.buttonWrapper} />
@@ -115,10 +128,11 @@ export const BottomPlayer = ({
 };
 
 interface LanguageButtonProps {
-  language: string;
   active: boolean;
 }
-const LanguageButtonContent = ({ language, active }: LanguageButtonProps) => {
+const LanguageButtonContent = ({ active }: LanguageButtonProps) => {
+  const { defaultLanguage } = useLocale();
+
   return (
     <View style={styles.languageButtonContent}>
       {active ? (
@@ -132,7 +146,7 @@ const LanguageButtonContent = ({ language, active }: LanguageButtonProps) => {
           style={styles.languageText}
           color={active ? theme.colors.teal : undefined}
         >
-          {language}
+          {defaultLanguage.toUpperCase()}
         </Text>
       </View>
     </View>

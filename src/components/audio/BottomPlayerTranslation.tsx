@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { LayoutAnimation, View, StyleSheet } from "react-native";
 
-import { TranslationButton } from "../buttons/TranslationButton";
-
+import { TranslationButton } from "@/components/buttons/TranslationButton";
+import { Divider } from "@/components/lists/Divider";
+import { useLocale } from "@/hooks/useLocale";
 import { useStory } from "@/hooks/useStory";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
@@ -16,13 +17,25 @@ export const BottomPlayerTranslation = ({
 }: BottomPlayerTranslationProps) => {
   const { story } = useStory();
   const [visible, setVisible] = useState(isOpen);
-  const [translation, setTranslation] = useState<string>("pl");
+  const { defaultLanguage } = useLocale();
+  const [translation, setTranslation] = useState<string>(defaultLanguage);
+
+  // current translations
+  // pl, en
+  // check useLocale
 
   const translations = story?.translations;
 
-  const handleTranslation = useCallback((language: string) => {
-    setTranslation(language);
-  }, []);
+  const handleTranslation = useCallback(
+    (language: string) => {
+      if (language === translation) return;
+
+      // Animate layout changes when language changes
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setTranslation(language);
+    },
+    [translation],
+  );
 
   useEffect(() => {
     // Animate layout changes when isOpen changes
@@ -34,16 +47,25 @@ export const BottomPlayerTranslation = ({
 
   return (
     <View style={styles.translation}>
-      {translations.pl && (
-        <TranslationButton onPress={() => handleTranslation("pl")}>
-          Polski
-        </TranslationButton>
-      )}
-      {translations.en && (
-        <TranslationButton onPress={() => handleTranslation("en")}>
-          English
-        </TranslationButton>
-      )}
+      <Divider />
+      <View style={styles.translationButtons}>
+        {translations.pl && (
+          <TranslationButton
+            active={translation === "pl"}
+            onPress={() => handleTranslation("pl")}
+          >
+            Polski
+          </TranslationButton>
+        )}
+        {translations.en && (
+          <TranslationButton
+            active={translation === "en"}
+            onPress={() => handleTranslation("en")}
+          >
+            English
+          </TranslationButton>
+        )}
+      </View>
       {translations[translation] && (
         <Text type="Lora14Reg">{translations[translation]}</Text>
       )}
@@ -53,11 +75,15 @@ export const BottomPlayerTranslation = ({
 
 export const styles = StyleSheet.create({
   translation: {
-    paddingTop: 0,
+    paddingTop: 8,
     paddingHorizontal: 16,
     paddingBottom: 24,
-    gap: 16,
+    gap: 24,
     flexDirection: "column",
     alignItems: "flex-start",
+  },
+  translationButtons: {
+    flexDirection: "row",
+    gap: 8,
   },
 });

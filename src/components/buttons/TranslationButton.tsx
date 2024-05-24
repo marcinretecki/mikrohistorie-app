@@ -5,16 +5,18 @@ import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
 
 interface TranslationButtonProps {
-  onPress: (language: string) => void;
+  onPress: () => void;
+  active: boolean;
   children: React.ReactNode;
 }
 export const TranslationButton = ({
   onPress,
+  active,
   children,
 }: TranslationButtonProps) => {
   return (
-    <Pressable onPress={() => onPress}>
-      <View style={styles.root}>
+    <Pressable onPress={onPress}>
+      <View style={[styles.root, active && styles.active].filter(Boolean)}>
         <Text type="Lora12Reg" color={theme.colors.text}>
           {children}
         </Text>
@@ -25,9 +27,14 @@ export const TranslationButton = ({
 
 const styles = StyleSheet.create({
   root: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 8,
     backgroundColor: theme.colors.bgBlue,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  active: {
+    backgroundColor: theme.colors.bgBluePressed,
   },
 });
