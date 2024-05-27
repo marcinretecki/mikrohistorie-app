@@ -1,6 +1,6 @@
-import fragmentPlayArrowIMG from "@assets/fragment_play_arrow.png";
-import fragmentPlayArrowActiveIMG from "@assets/fragment_play_arrow_active.png";
-import fragmentRotationIMG from "@assets/fragment_rotation.png";
+import fragmentPlayArrowActiveIMG from "@assets/fragment_play_arrow=Active.png";
+import fragmentPlayArrowIMG from "@assets/fragment_play_arrow=Default.png";
+import fragmentRotationIMG from "@assets/fragment_play_arrow=Rotation.png";
 import { useEffect, useRef } from "react";
 import { Animated, Image, View, StyleSheet, Easing } from "react-native";
 

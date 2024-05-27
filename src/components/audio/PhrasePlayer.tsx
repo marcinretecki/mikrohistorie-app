@@ -38,10 +38,15 @@ export const PhrasePlayer = () => {
 
   // play the phrase
   const playPhrase = async (newPosition: number) => {
-    if (!sound || !version) return;
+    if (!sound || !version) {
+      console.log("Sound or version is not ready");
+      return;
+    }
 
     // Do not interrupt the current phrase if it's already playing
     if (playingPhrase === newPosition) {
+      console.log("Phrase is already playing");
+      console.log("Playing phrase", playingPhrase, "New position", newPosition);
       return;
     }
 
