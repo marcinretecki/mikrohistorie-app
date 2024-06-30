@@ -8,7 +8,7 @@ import { theme } from "@/styles/theme";
 interface KeyProps {
   letter: string;
   variant?: "default" | "uppercase" | "spacebar";
-  onPress: (text?: string) => void;
+  onPress: (letter: string) => void;
 }
 export const Key = ({ letter, variant = "default", onPress }: KeyProps) => {
   const [isPressed, setIsPressed] = React.useState(false);

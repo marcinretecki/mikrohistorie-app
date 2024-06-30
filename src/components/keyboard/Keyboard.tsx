@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { LowercaseLayout, NumericLayout, UppercaseLayout } from "./Layouts";
 
 interface KeyboardProps {
-  onKeyboardInput: (text?: string) => void;
+  onKeyboardInput: (letter: string) => void;
   onNext: () => void;
   isOpen: boolean;
   enterIsActive: boolean;
@@ -27,7 +27,7 @@ export const Keyboard = ({
     setVisible(isOpen);
   }, [isOpen]);
 
-  const handlePress = useCallback((letter?: string) => {
+  const handlePress = useCallback((letter: string) => {
     onKeyboardInput(letter);
   }, []);
 

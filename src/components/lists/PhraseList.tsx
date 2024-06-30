@@ -1,6 +1,11 @@
-import { View, StyleSheet, Pressable } from "react-native";
+import { useRef } from "react";
+import { View, StyleSheet, Pressable, FlatList } from "react-native";
+
+import { PhraseListHeader } from "./PhraseListHeader";
 
 import { PhrasePlayButton } from "@/components/buttons/PhrasePlayButton";
+import { BackButton } from "@/components/header/BackButton";
+import { Reader } from "@/components/indicators/Reader";
 import { BoxShadow } from "@/components/shadow/BoxShadow";
 import { theme } from "@/styles/theme";
 import { Text } from "@/styles/typography";
@@ -8,35 +13,59 @@ import { StoryVersion, StoryPhrase } from "@/types/types";
 
 interface PhraseListProps {
   version: StoryVersion;
-  currentPhraseNumber: number;
+  title: string;
+  focusedPhrase: number;
+  playingPhrase: number;
   isPlaying: boolean;
-  handleSetPhraseNumber: (newPosition: number) => void;
+  handlePlayPhrase: (newPosition: number) => void;
 }
 export const PhraseList = ({
   version,
-  currentPhraseNumber,
+  title,
+  focusedPhrase,
+  playingPhrase,
   isPlaying,
-  handleSetPhraseNumber,
+  handlePlayPhrase,
 }: PhraseListProps) => {
+  const flatListRef = useRef(null);
   const phrases = version.phrases;
 
+  // TODO: check getItemLayout value
+  // TODO: move ref to parent component
   return (
-    <View style={styles.root}>
-      {phrases.map((phrase: StoryPhrase, index: number) => {
-        const baseIndex = index + 1;
-
-        return (
-          <Fragment
-            key={baseIndex}
-            phrase={phrase}
-            isCurrent={baseIndex === currentPhraseNumber}
-            isPlaying={baseIndex === currentPhraseNumber && isPlaying}
-            isNotDone={baseIndex > currentPhraseNumber}
-            pressHandler={() => handleSetPhraseNumber(baseIndex)}
-          />
-        );
+    <FlatList
+      ref={flatListRef}
+      data={phrases}
+      getItemLayout={(data, index) => ({
+        length: 80,
+        offset: 80 * index,
+        index,
       })}
-    </View>
+      renderItem={({
+        item: phrase,
+        index,
+      }: {
+        item: StoryPhrase;
+        index: number;
+      }) => {
+        const baseIndex = index + 1;
+        return (
+          <View style={styles.listItemWrapper}>
+            <Fragment
+              key={baseIndex}
+              phrase={phrase}
+              isCurrent={baseIndex === focusedPhrase}
+              isPlaying={baseIndex === playingPhrase && isPlaying}
+              isNotDone={baseIndex > focusedPhrase}
+              pressHandler={() => handlePlayPhrase(baseIndex)}
+            />
+          </View>
+        );
+      }}
+      ListHeaderComponent={() => (
+        <PhraseListHeader title={title} version={version} />
+      )}
+    />
   );
 };
 
@@ -79,10 +108,27 @@ const Fragment = ({
 };
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    gap: 16,
+  backWrapper: {
+    position: "absolute",
+    top: 48,
+    left: 16,
   },
+  header: {
+    paddingTop: 80,
+    paddingBottom: 40,
+    gap: 32,
+    flex: 1,
+  },
+  titleWrapper: {
+    alignItems: "center",
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  listItemWrapper: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+
   phraseWrapper: {
     flexDirection: "row",
     alignSelf: "stretch",

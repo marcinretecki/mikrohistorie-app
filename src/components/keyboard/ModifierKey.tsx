@@ -17,7 +17,7 @@ interface ModifierKeyProps {
     | "enter"
     | "numbers"
     | "numbersActive";
-  onPress: (text?: string) => void;
+  onPress: (letter: string) => void;
   disabled?: boolean;
 }
 export const ModifierKey = ({
@@ -93,7 +93,7 @@ export const ModifierKey = ({
   );
 };
 
-const Backspace = ({ onPress }: { onPress: (text: string) => void }) => {
+const Backspace = ({ onPress }: { onPress: (letter: string) => void }) => {
   const [isPressed, setIsPressed] = React.useState(false);
   const [intervalId, setIntervalId] = React.useState<NodeJS.Timeout | null>(
     null,

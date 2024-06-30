@@ -23,42 +23,38 @@ import { Text } from "@/styles/typography";
 
 export interface BottomPlayerProps {
   size?: "small" | "big";
-  position: number;
+  focusedPhrase: number;
   maxPosition: number;
   keyboardIsOpen?: boolean;
   isPlaying?: boolean;
-  handleSetPhraseNumber: (newPosition: number) => void;
-  handleKeyboardInput?: (letter?: string) => void;
+  handlePlayPhrase: (newPosition: number) => void;
+  handleKeyboardInput?: (letter: string) => void;
 }
 
 export const BottomPlayer = ({
   size = "big",
-  position,
+  focusedPhrase,
   maxPosition,
   isPlaying = false,
   keyboardIsOpen = false,
-  handleSetPhraseNumber,
+  handlePlayPhrase,
   handleKeyboardInput,
 }: BottomPlayerProps) => {
   const { story } = useStory();
   const [translationIsOpen, setTranslationIsOpen] = React.useState(false);
 
   const isLast = useMemo(
-    () => position === maxPosition,
-    [position, maxPosition],
+    () => focusedPhrase === maxPosition,
+    [focusedPhrase, maxPosition],
   );
 
   const previousPositionHandler = useCallback(() => {
-    if (position > 1) handleSetPhraseNumber(position - 1);
-  }, [position]);
+    if (focusedPhrase > 1) handlePlayPhrase(focusedPhrase - 1);
+  }, [focusedPhrase]);
 
   const nextPositionHandler = useCallback(() => {
-    if (position < maxPosition) handleSetPhraseNumber(position + 1);
-  }, [position, maxPosition]);
-
-  const currentPositionHandler = useCallback(() => {
-    handleSetPhraseNumber(position);
-  }, [position]);
+    if (focusedPhrase < maxPosition) handlePlayPhrase(focusedPhrase + 1);
+  }, [focusedPhrase, maxPosition]);
 
   const handleTranslationOpening = useCallback(() => {
     // Animate layout changes when translationIsOpen changes
@@ -70,8 +66,6 @@ export const BottomPlayer = ({
     story?.translations &&
     Object.keys(story.translations).length > 0 &&
     size === "big";
-
-  console.log("hasTranslations", story?.translations);
 
   return (
     <View style={styles.root}>
@@ -85,13 +79,13 @@ export const BottomPlayer = ({
       >
         <View style={styles.buttonWrapper}>
           <Text type="RobotoMono10Medium">
-            {position.toString() + "/" + maxPosition}
+            {focusedPhrase.toString() + "/" + maxPosition}
           </Text>
         </View>
         <BottomPlayerButton onPress={() => previousPositionHandler()}>
           <Image style={styles.playImage} source={skipPreviousIMG} />
         </BottomPlayerButton>
-        <BottomPlayerButton onPress={() => currentPositionHandler()}>
+        <BottomPlayerButton onPress={() => handlePlayPhrase(focusedPhrase)}>
           {isPlaying ? (
             <Image style={styles.playImage} source={playArrowActiveIMG} />
           ) : (

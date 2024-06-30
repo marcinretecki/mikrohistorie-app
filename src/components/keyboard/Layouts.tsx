@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { Key, KeyPlaceholder } from "./Key";
@@ -6,7 +6,7 @@ import { ModifierKey } from "./ModifierKey";
 
 interface KeyboardLayoutProps {
   setKeyboardLayout: (layout: "lowercase" | "uppercase" | "numeric") => void;
-  onPress: (text?: string) => void;
+  onPress: (letter: string) => void;
   onPressNext: () => void;
   enterIsActive?: boolean;
 }
@@ -99,10 +99,14 @@ export const UppercaseLayout = ({
   onPressNext,
   enterIsActive = true,
 }: KeyboardLayoutProps) => {
-  const handlePress = (letter?: string) => {
-    onPress(letter);
-    setKeyboardLayout("lowercase");
-  };
+  const handlePress = useCallback(
+    (letter: string) => {
+      onPress(letter);
+      setKeyboardLayout("lowercase");
+    },
+    [onPress, setKeyboardLayout],
+  );
+
   return (
     <View style={styles.rowWrapper}>
       <View style={styles.row}>

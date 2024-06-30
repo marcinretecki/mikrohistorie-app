@@ -1,7 +1,12 @@
+import { Trans } from "@lingui/macro";
 import { useEffect, useRef } from "react";
-import { View, StyleSheet, Pressable, TextInput } from "react-native";
+import { View, StyleSheet, Pressable, TextInput, FlatList } from "react-native";
 
 import { Divider } from "./Divider";
+import { PhraseListHeader } from "./PhraseListHeader";
+import { ButtonPrimary } from "../buttons/ButtonPrimary";
+import { BackButton } from "../header/BackButton";
+import { Reader } from "../indicators/Reader";
 
 import { PhrasePlayButton } from "@/components/buttons/PhrasePlayButton";
 import { BoxShadow } from "@/components/shadow/BoxShadow";
@@ -11,56 +16,94 @@ import { StoryVersion, StoryPhrase } from "@/types/types";
 
 interface PhraseWriteListProps {
   version: StoryVersion;
-  currentPhraseNumber: number;
+  title: string;
+  focusedPhrase: number;
   isPlaying: boolean;
   isChecked: boolean;
   userInputValues: { [index: number]: string };
-  handleSetPhraseNumber: (newPosition: number) => void;
-  handleUserInput: (index: number, text: string) => void;
+  handlePlayPhrase: (phrase: number) => void;
+  handleCheck: () => void;
 }
 export const PhraseWriteList = ({
   version,
-  currentPhraseNumber,
+  title,
+  focusedPhrase,
   isPlaying,
   isChecked,
   userInputValues,
-  handleSetPhraseNumber,
-  handleUserInput,
+  handlePlayPhrase,
+  handleCheck,
 }: PhraseWriteListProps) => {
+  const flatListRef = useRef(null);
   const phrases = version.phrases;
 
+  // TODO: add layout lengh on isChecked
+
   return (
-    <View style={styles.root}>
-      {phrases.map((phrase: StoryPhrase, index: number) => {
+    <FlatList
+      ref={flatListRef}
+      data={phrases}
+      getItemLayout={(data, index) => ({
+        length: 80,
+        offset: 80 * index,
+        index,
+      })}
+      renderItem={({
+        item: phrase,
+        index,
+      }: {
+        item: StoryPhrase;
+        index: number;
+      }) => {
         const baseIndex = index + 1;
 
         if (isChecked) {
           return (
-            <FragmentChecked
-              key={baseIndex}
-              phrase={phrase}
-              userInput={userInputValues[baseIndex] || ""}
-              isCurrent={baseIndex === currentPhraseNumber}
-              isPlaying={baseIndex === currentPhraseNumber && isPlaying}
-              pressHandler={() => handleSetPhraseNumber(baseIndex)}
-            />
+            <View style={styles.listItemWrapper}>
+              <FragmentChecked
+                key={baseIndex}
+                phrase={phrase}
+                userInput={userInputValues[baseIndex] || ""}
+                isCurrent={baseIndex === focusedPhrase}
+                isPlaying={baseIndex === focusedPhrase && isPlaying}
+                pressHandler={() => handlePlayPhrase(baseIndex)}
+              />
+            </View>
           );
         }
 
         return (
-          <FragmentWrite
-            key={baseIndex}
-            isCurrent={baseIndex === currentPhraseNumber}
-            isPlaying={baseIndex === currentPhraseNumber && isPlaying}
-            isNotDone={baseIndex > currentPhraseNumber}
-            onPress={() => handleSetPhraseNumber(baseIndex)}
-            value={userInputValues[baseIndex] || ""}
-            index={baseIndex}
-            onNext={() => handleSetPhraseNumber(baseIndex + 1)}
-          />
+          <View style={styles.listItemWrapper}>
+            <FragmentWrite
+              key={baseIndex}
+              isCurrent={baseIndex === focusedPhrase}
+              isPlaying={baseIndex === focusedPhrase && isPlaying}
+              isNotDone={baseIndex > focusedPhrase}
+              onPress={() => handlePlayPhrase(baseIndex)}
+              value={userInputValues[baseIndex] || ""}
+              index={baseIndex}
+              onNext={() => handlePlayPhrase(baseIndex + 1)}
+            />
+          </View>
         );
-      })}
-    </View>
+      }}
+      ListHeaderComponent={() => (
+        <PhraseListHeader title={title} version={version} />
+      )}
+      ListFooterComponent={() =>
+        !isChecked ? (
+          <View style={styles.footerWrapper}>
+            <ButtonPrimary
+              onPress={() => {
+                handleCheck();
+              }}
+            >
+              <Trans>Check</Trans>
+            </ButtonPrimary>
+          </View>
+        ) : null
+      }
+    />
   );
 };
 
@@ -164,7 +207,7 @@ const FragmentChecked = ({
             <Divider />
             <Text
               type="Lora14Reg"
-              color={theme.colors.text}
+              color={theme.colors.text80}
               style={styles.textTest}
             >
               {phrase.phrase}
@@ -194,10 +237,31 @@ const compareAndGenerateComponents = (phrase: string, userInput: string) => {
 };
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    gap: 16,
+  backWrapper: {
+    position: "absolute",
+    top: 48,
+    left: 16,
   },
+  header: {
+    paddingTop: 80,
+    paddingBottom: 40,
+    gap: 32,
+    flex: 1,
+  },
+  titleWrapper: {
+    alignItems: "center",
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  footerWrapper: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  listItemWrapper: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+
   phraseWrapper: {
     flexDirection: "row",
     alignSelf: "stretch",

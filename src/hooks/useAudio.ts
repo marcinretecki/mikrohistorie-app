@@ -25,6 +25,7 @@ export const useAudio = ({ uri }: useAudioProps) => {
         );
 
         if (status.isLoaded) {
+          console.log("Audio loaded", uri);
           setSound(newSound);
           setIsLoading(false);
         }
